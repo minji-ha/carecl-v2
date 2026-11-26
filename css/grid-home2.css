@@ -142,7 +142,7 @@
   box-shadow:0 1px 2px rgba(30,24,20,.04),0 30px 70px -40px rgba(30,24,20,.28);
   padding:clamp(24px,3.6vw,60px) clamp(20px,4vw,68px) clamp(24px,3vw,48px);color:var(--ink);
 }
-.rd__head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px 32px;flex-wrap:wrap;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.rd__head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px 32px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--ink)}
 .rd .rd__brand b{display:block;font-family:var(--f-title);font-weight:400;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.01em}
 .rd__brand > span{display:block;margin-top:10px;font-family:var(--f-ui);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
 .rd__meta{display:flex;margin:0;border:1px solid var(--rl)}
@@ -150,7 +150,7 @@
 .rd__meta div + div{border-left:1px solid var(--rl)}
 .rd__meta dt{font-family:var(--f-ui);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#A79B92}
 .rd__meta dd{margin:3px 0 0;font-size:13px;white-space:nowrap}
-.rd__sample{margin:4px 0 0;padding-top:4px;border-top:1px solid var(--ink);font-size:10.5px;letter-spacing:.2em;color:var(--accent);text-align:right}
+.rd__sample{margin:8px 0 0;font-size:10.5px;letter-spacing:.2em;color:var(--accent);text-align:right}
 .rd__sec{margin-top:clamp(26px,3vw,44px)}
 .rd__h{display:flex;align-items:baseline;gap:12px;margin:0 0 14px;font-size:clamp(17px,1.35vw,20px);font-weight:600;letter-spacing:-.02em}
 .rd__h em{font-style:normal;font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em}
@@ -364,3 +364,11 @@
 .gline{--gl-in:max(var(--gut),calc((100% - 1680px) / 2 + var(--gut)))}
 .gline__slider{scroll-padding-inline:var(--gl-in)}
 .gline__track{padding-inline:var(--gl-in)}
+/* 수출 카드 — 점선 세계지도는 자르지 않고 흰 바탕에 통째로 */
+.v2row__img--map{background:#fff;border-left:1px solid var(--line)}
+.v2row__img--map img{object-fit:contain;padding:clamp(16px,2.4vw,40px)}
+@media (max-width:767px){.v2row__img--map{border-left:0;border-bottom:1px solid var(--line);aspect-ratio:2/1}.v2row__img--map img{padding:10px}}
+/* 수출 국가 — 코드 동그라미 대신 국기 */
+.v2ex__flag{grid-row:span 2;display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:4px;box-shadow:0 0 0 1px rgba(30,26,23,.1)}
+.v2row .v2ex__c{grid-template-columns:32px 1fr}
+@media (max-width:767px){.v2row .v2ex__c{grid-template-columns:30px 1fr}}

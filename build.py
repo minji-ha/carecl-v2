@@ -544,7 +544,7 @@ def page_index2():
             <b class="gtile__name">{name}</b>
           </a>""" for i, (tag, name, desc, cut, h) in enumerate(GLINEUP))
     patents = "\n".join(f"""            <li><em>{k}</em><b>{no}</b>{f"<p>{t}</p>" if t else ""}</li>""" for k, no, t in V2_PATENTS)
-    exports = "\n".join(f"""            <li class="v2ex__c{' is-deal' if st != '수출' else ''}"><span class="v2ex__code">{code}</span><b>{kr}</b><em>{en}</em><small>{st}</small></li>"""
+    exports = "\n".join(f"""            <li class="v2ex__c{' is-deal' if st != '수출' else ''}"><img class="v2ex__flag" src="assets/img/flags/{code.lower()}.svg" alt="{kr} 국기" width="40" height="30"><b>{kr}</b><em>{en}</em><small>{st}</small></li>"""
                         for code, kr, en, st in V2_EXPORT)
 
     body = f"""<main class="ghome ghome--v2">
@@ -691,7 +691,7 @@ def page_index2():
         </div>
       </article>
       <article class="v2row v2row--rev" data-v2-in>
-        <figure class="v2row__img"><img src="assets/img/h-package.jpg?v={VER}" alt="careCL TECH FIT 패키지와 그리드 마스크, 콜라겐 젤" loading="lazy"></figure>
+        <figure class="v2row__img v2row__img--map"><img src="assets/img/v2-export-map.jpg?v={VER}" alt="수출 · 독점 계약 국가를 표시한 세계지도: 캐나다, 이집트, 두바이, 홍콩, 호주" loading="lazy"></figure>
         <div class="v2row__txt">
           <p class="v2row__k">Global</p>
           <h3 class="v2row__t">수출 · 독점 계약 <b>5</b>개국</h3>
