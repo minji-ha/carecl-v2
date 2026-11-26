@@ -612,17 +612,24 @@ def page_index2():
   <section class="v2stamp" aria-labelledby="v2stamp-title">
     <div class="v2stamp__block" data-v2-in>
       <div class="v2stamp__cap">
-        <div>
-          <p class="glabel glabel--light">Core Technology</p>
-          <h2 id="v2stamp-title">5 sec Stamping Shot</h2>
-        </div>
-        <p>피부에 닿는 순간을 감지해 출력을 조절하고, 한 자리에 5초간 머무르며 반복 전달합니다.</p>
+        <p class="v2stamp__k"><i></i>Core Technology</p>
+        <h2 id="v2stamp-title" class="v2stamp__title"><span class="v2stamp__num">5</span><span class="v2stamp__unit">sec</span><span class="v2stamp__name">Stamping<br>Shot</span></h2>
+        <p class="v2stamp__lead">피부에 닿는 순간을 감지해 출력을 조절하고, 한 자리에 5초간 머무르며 반복 전달합니다.</p>
+        <ol class="v2stamp__steps">
+          <li><b>01</b><span>닿는 순간 감지</span></li>
+          <li><b>02</b><span>출력 조절</span></li>
+          <li><b>03</b><span>5초간 반복 전달</span></li>
+        </ol>
       </div>
-      <div class="v2stamp__media">
+      <figure class="v2stamp__media">
         <video class="v2stamp__video" poster="assets/img/t-techfit-use.jpg?v={VER}" muted loop playsinline autoplay preload="none" aria-label="TECH FIT 5초 스탬핑샷 영상">
           <!-- <source src="assets/video/stamping.mp4?v={VER}" type="video/mp4"> -->
         </video>
-      </div>
+        <figcaption class="v2stamp__hud" aria-hidden="true">
+          <span class="v2stamp__ring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19"/><circle class="v2stamp__arc" cx="22" cy="22" r="19"/></svg><b>5s</b></span>
+          <span class="v2stamp__tag"><em>TECH FIT</em>Stamping Shot</span>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
@@ -674,7 +681,7 @@ def page_index2():
     </div>
     <div class="gwrap v2trust__rows">
       <article class="v2row" data-v2-in>
-        <figure class="v2row__img"><img src="assets/img/e-techfit-lit-43.jpg?v={VER}" alt="빛이 켜진 TECH FIT 9구 헤드" loading="lazy"></figure>
+        <figure class="v2row__img"><img src="assets/img/v2-patents.jpg?v={VER}" alt="케어클 등록특허 특허증 4장" loading="lazy"></figure>
         <div class="v2row__txt">
           <p class="v2row__k">Patent</p>
           <h3 class="v2row__t">등록특허 <b>4</b>건</h3>
