@@ -1,0 +1,243 @@
+/* =========================================================
+   GRID 시안 메인 (2026-11-05)
+   ========================================================= */
+.ghome section{position:relative}
+.glines{display:none}   /* 메인은 5 STEPS에서만 세로선 */
+.gsteps__lines{position:absolute;inset:0;pointer-events:none}
+.gsteps__lines i{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.gsteps__lines i:nth-child(1){left:20%}.gsteps__lines i:nth-child(2){left:40%}.gsteps__lines i:nth-child(3){left:60%}.gsteps__lines i:nth-child(4){left:80%}
+.gwrap{padding-inline:var(--gut);max-width:1680px;margin-inline:auto}
+
+/* 공용 — 작은 라벨 · 제목 · 알약 버튼 · 사진 카드 */
+.glabel{
+  display:block;margin:0;font-family:var(--f-ui);font-style:normal;font-weight:600;
+  font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);
+}
+.ghead{text-align:center;position:relative;z-index:2}
+.ghead__big{
+  margin:.25em 0 0;font-family:var(--f-title);font-weight:600;color:var(--accent);
+  font-size:clamp(52px,6vw,104px);line-height:1;letter-spacing:-.035em;
+}
+.ghead__big--ink{color:var(--ink)}
+.ghead__title{
+  margin:.6em 0 0;font-family:var(--f-title);font-weight:600;color:var(--ink);
+  font-size:clamp(30px,3.3vw,56px);line-height:1.22;letter-spacing:-.03em;text-wrap:balance;
+}
+.gacc{color:var(--accent)}
+.ghead__kr{margin:1em 0 0;font-size:clamp(15px,1.15vw,19px);line-height:1.7;color:var(--ink-2)}
+
+.gpill{
+  display:inline-flex;align-items:center;justify-content:center;height:50px;padding:0 30px;
+  border:2.5px solid var(--accent);border-radius:999px;color:var(--accent);background:#fff;
+  font-family:var(--f-ui);font-weight:600;font-size:15px;letter-spacing:.01em;white-space:nowrap;
+  transition:background .3s ease,color .3s ease,border-color .3s ease;
+}
+.gpill:hover{background:var(--accent);color:#fff}
+.gpill--solid{background:var(--accent);color:#fff}
+.gpill--solid:hover{background:var(--ink);border-color:var(--ink)}
+.gpill--light{background:transparent;border-color:#fff;color:#fff}
+.gpill--light:hover{background:#fff;color:var(--ink)}
+.gpill--sm{height:42px;padding:0 22px;font-size:14px}
+
+.gcard{border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--soft);margin:0}
+.gcard > img{width:100%;height:100%;object-fit:cover}
+
+
+/* ── 5 STEPS 머리 — 라벨 대신 careCL 로고 */
+.gsteps__logo{display:block;width:clamp(120px,10vw,170px);margin:0 auto;color:var(--accent)}
+.gsteps__logo svg{display:block;width:100%;height:auto}
+.gsteps__logo + .ghead__big{margin-top:.12em}
+
+/* ── 03 5 STEPS : 세로선을 타고 내려와 한 줄로 ─────── */
+.gsteps{height:300vh}
+.gsteps__pin{
+  position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(30px,5vh,64px);
+  padding-top:calc(var(--head) * .6);
+}
+.gsteps__row{
+  list-style:none;margin:0;padding:0;width:100%;
+  display:grid;grid-template-columns:repeat(5,1fr);   /* 칸 = 배경 세로선 사이 */
+}
+.gstep{padding-inline:clamp(12px,1.7vw,32px);--p:0;--t:0}
+.gstep__img{
+  aspect-ratio:4/5;max-height:44vh;margin-inline:auto;
+  transform:translate3d(0,calc(-1 * (var(--from) + 100vh) * (1 - var(--p))),0);will-change:transform;
+}
+.gstep__img img{width:100%;height:100%;object-fit:cover}
+.gstep__txt{margin-top:clamp(18px,2.4vh,30px);opacity:var(--t,1);transform:translateY(calc((1 - var(--t,1)) * 14px))}
+.gstep__head{margin:0;font-family:var(--f-title);font-weight:600;font-size:clamp(16px,1.35vw,22px);letter-spacing:.01em;text-transform:uppercase;line-height:1.1}
+.gstep__head em{font-style:normal;font-weight:400;color:var(--accent);font-size:1.6em;letter-spacing:-.02em;margin-right:.12em;vertical-align:-.06em}
+.gstep__kr{display:block;margin-top:.7em;font-size:clamp(14px,1vw,16px);font-weight:700}
+.gstep__desc{margin:.35em 0 0;font-size:clamp(12.5px,.88vw,14px);line-height:1.6;color:var(--ink-2)}
+
+/* ── 04 네 가지 기준 ─────────────────────────────── */
+.gwhy{padding-block:var(--sec) 0}
+.gwhy__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,7vw,140px);margin-top:clamp(50px,6vw,100px)}
+.gwhy__media{position:sticky;top:calc(var(--head) + 4vh);aspect-ratio:1/1;align-self:start;width:min(100%,calc(100vh - var(--head) - 12vh))}
+.gwhy__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .8s ease,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.gwhy__pic.is-on{opacity:1;transform:none}
+.gwhy__list{display:flex;flex-direction:column}
+.gwhy__item{min-height:72vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;opacity:.22;transition:opacity .6s ease}
+.gwhy__item.is-on{opacity:1}
+.gwhy__title{margin:.5em 0 0;font-family:var(--f-title);font-weight:600;font-size:clamp(30px,3vw,52px);letter-spacing:-.03em;line-height:1.2}
+.gwhy__q{margin:.5em 0 1.8em;font-size:clamp(15px,1.15vw,19px);color:var(--ink-2)}
+.gwhy .core__cta{display:flex;justify-content:center;margin-top:clamp(20px,3vw,40px)}
+
+/* ── 05 라인업 — 좌우 슬라이더 (글은 영문만) ───────── */
+.gline{padding-block:var(--sec) 0}
+.gline__head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.gline__head .ghead__title{margin-top:.5em}
+.gline__btns{display:flex;gap:10px;flex:none}
+.gline__nav{
+  width:54px;height:54px;border-radius:50%;border:2.5px solid var(--ink);display:grid;place-items:center;
+  transition:background .3s ease,border-color .3s ease,opacity .3s ease;
+}
+.gline__nav svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.8;transition:stroke .3s ease}
+.gline__nav:hover{background:var(--accent);border-color:var(--accent)}
+.gline__nav:hover svg{stroke:#fff}
+.gline__nav:disabled{opacity:.25;pointer-events:none}
+.gline__slider{
+  margin-top:clamp(36px,4vw,64px);overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut);scrollbar-width:none;cursor:grab;
+}
+.gline__slider::-webkit-scrollbar{display:none}
+.gline__slider.is-drag{cursor:grabbing;scroll-snap-type:none}
+.gline__slider.is-drag .gtile{pointer-events:none}
+.gline__track{display:flex;gap:clamp(14px,1.4vw,26px);padding-inline:var(--gut);width:max-content}
+.gtile{
+  position:relative;flex:none;width:clamp(240px,22vw,360px);scroll-snap-align:start;
+  display:flex;flex-direction:column;padding:clamp(20px,1.8vw,30px);
+  border-radius:var(--r);background:#F7F4F1;user-select:none;-webkit-user-select:none;
+  transition:background .4s ease;
+}
+.gtile:hover{background:#F3E9E1}
+.gtile__no{font-family:var(--f-title);font-size:14px;color:var(--ink-2)}
+.gtile__img{position:relative;aspect-ratio:1/1.08;margin:6px 0 22px}
+.gtile__img img{position:absolute;inset:4% 12%;width:76%;height:92%;object-fit:contain;filter:drop-shadow(0 20px 22px rgba(30,20,10,.14));transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.gtile:hover .gtile__img img{transform:scale(1.06) translateY(-6px)}
+.gtile__tag{font-style:normal;font-family:var(--f-ui);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.gtile__name{margin-top:8px;font-family:var(--f-title);font-weight:400;font-size:clamp(20px,1.6vw,26px);line-height:1.2;color:var(--ink)}
+.gline__bar{margin-top:clamp(28px,3vw,48px);height:2px;background:var(--hair);position:relative;overflow:hidden}
+.gline__bar i{position:absolute;left:0;top:0;bottom:0;width:30%;background:var(--accent);transition:transform .2s linear,width .2s linear}
+/* 처음 보일 때 카드가 오른쪽에서 차례로 들어온다 */
+.js-tiles .gtile{opacity:0;transform:translateX(60px)}
+.js-tiles .gline__track.is-in .gtile{opacity:1;transform:none;transition:opacity .7s ease calc(var(--i) * .08s),transform 1s cubic-bezier(.16,1,.3,1) calc(var(--i) * .08s),background .4s ease}
+
+/* ── 06 공식몰 ─────────────────────────────────── */
+.gshop{height:240vh;margin-top:calc(var(--sec) * .5)}
+.gshop__pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center}
+.gshop__pin > .gwrap{width:100%}
+.gshop__card{
+  --e:0;position:relative;aspect-ratio:21/9;max-height:calc(100svh - var(--head) - 60px);margin-inline:auto;overflow:hidden;
+  border-radius:var(--r);
+  /* 조금 작은 카드 → 제 크기 (js가 --e 0→1) */
+  transform:scale(calc(.86 + var(--e) * .14));transform-origin:50% 60%;will-change:transform;
+}
+.gshop__card img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transition:transform .5s cubic-bezier(.16,1,.3,1);
+  transform:translate3d(0,var(--py,0%),0) scale(var(--z,1.12));will-change:transform;
+}
+.gshop__card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,12,6,.5),rgba(20,12,6,0) 62%);opacity:calc(.35 + var(--e) * .65)}
+.gshop__copy{position:absolute;left:clamp(26px,5vw,90px);top:50%;transform:translateY(-50%);z-index:1;color:#fff}
+.gshop__copy h2{margin:0;font-family:var(--f-title);font-weight:600;font-size:clamp(30px,3.6vw,62px);letter-spacing:-.02em;line-height:1.08}
+.gshop__copy p{margin:.8em 0 1.9em;font-size:clamp(14px,1.1vw,18px);opacity:.92}
+/* 글은 다 열린 뒤 한 줄씩 아래에서 올라온다 */
+.gshop__copy h2 > span,.gshop__copy p > span{display:inline-block}
+.gshop__copy h2 > span{display:block}
+.gshop__copy h2 > span,.gshop__copy p > span,.gshop__copy .gpill{opacity:0;transform:translateY(18px);transition:opacity 1s ease,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.gshop.is-open .gshop__copy h2 > span,.gshop.is-open .gshop__copy p > span,.gshop.is-open .gshop__copy .gpill{opacity:1;transform:none}
+.gshop.is-open .gshop__copy h2 > span:nth-child(2){transition-delay:.1s}
+.gshop.is-open .gshop__copy p > span{transition-delay:.22s}
+.gshop.is-open .gshop__copy .gpill{transition-delay:.34s}
+
+/* ── 07 문의 ──────────────────────────────────── */
+.gcontact{padding-block:var(--sec) 0;text-align:center}
+.gcontact .gpill{margin-top:clamp(26px,2.6vw,40px)}
+.gcontact__links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 0;margin-top:clamp(30px,3vw,50px)}
+.gcontact__links a{padding:0 clamp(14px,1.6vw,28px);font-size:14px;color:var(--ink-2);border-left:1px solid var(--hair);line-height:1.2}
+.gcontact__links a:first-child{border-left:0}
+.gcontact__links a:hover{color:var(--accent)}
+.gcontact__links span{display:block;margin-top:4px;font-family:var(--f-ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.ghome + .foot{margin-top:var(--sec)}
+
+/* ── 태블릿 ───────────────────────────────────── */
+@media (max-width:1080px){
+}
+/* ── 모바일 ───────────────────────────────────── */
+@media (max-width:767px){
+  .gintro__logo{width:72vw}
+
+  .gsteps{height:auto;padding-block:var(--sec) 0}
+  .gsteps__pin{position:static;height:auto;overflow:visible;padding-top:0;gap:40px}
+  .gsteps__row{grid-template-columns:1fr;gap:34px;padding-inline:var(--gut)}
+  .gstep{display:grid;grid-template-columns:42% 1fr;gap:18px;align-items:center;padding:0}
+  .gstep__img{max-height:none;width:100%;transform:translate3d(0,calc(-60px * (1 - var(--p))),0);opacity:var(--p);transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .6s ease}
+  .gstep__txt{margin-top:0;opacity:var(--p);transform:none;transition:opacity .6s ease .2s}
+  .gstep__head{font-size:16px}
+
+  .gwhy__grid{grid-template-columns:1fr;gap:0}
+  .gwhy__media{position:sticky;top:calc(var(--head) + 8px);z-index:1;aspect-ratio:16/10;max-height:none}
+  .gwhy__item{min-height:56vh}
+
+  .gtile{width:62vw}
+  .gline__nav{width:44px;height:44px}
+  .gsteps__lines{display:none}
+
+  .gshop{height:200vh}
+  .gshop__card{aspect-ratio:4/5}
+  .gshop__card img{object-position:62% 50%}
+  .gshop__card::after{background:linear-gradient(0deg,rgba(20,12,6,.6),rgba(20,12,6,0) 60%)}
+  .gshop__copy{top:auto;bottom:28px;transform:none;left:24px;right:24px}
+
+  .gcontact__links a{flex:1 1 50%;border-left:0;padding-block:6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .gsteps,.gshop{height:auto}
+  .gsteps__pin,.gshop__pin{position:relative;height:auto}
+  .gshop__card{--e:1!important}
+  .gshop .gshop__copy *{opacity:1!important;transform:none!important}
+  .gstep{--p:1!important;--t:1!important}
+}
+/* 단계 번호와 단계 이름 — 크기 차이를 줄이고 같은 기준선에 */
+.gstep__head{font-size:clamp(17px,1.45vw,24px)}
+.gstep__head em{font-size:1.3em;vertical-align:baseline;margin-right:.18em}
+
+/* 문의 — 문의 종류 4개를 카드로 (영문 라벨 · 한글 이름 · 연락처 · 화살표). 마우스를 올리면 오렌지 */
+.gcontact__cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.2vw,22px);margin-top:clamp(44px,4.4vw,80px);text-align:left}
+.gcc{
+  position:relative;display:flex;flex-direction:column;min-height:clamp(200px,15vw,260px);padding:clamp(22px,1.8vw,32px);
+  border-radius:var(--r);background:#F7F4F1;transition:background .4s ease,transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease;
+}
+.gcc:hover{background:var(--accent);transform:translateY(-6px);box-shadow:var(--shadow)}
+.gcc__en{font-style:normal;font-family:var(--f-ui);font-size:12px;letter-spacing:.16em;color:var(--accent);transition:color .3s ease}
+.gcc__kr{display:block;margin-top:10px;font-size:clamp(19px,1.5vw,24px);font-weight:400;color:var(--ink);transition:color .3s ease}
+.gcc__desc{margin:12px 0 0;flex:1;font-size:14px;line-height:1.75;color:var(--ink-2);transition:color .3s ease}
+.gcc__go{align-self:flex-end;width:42px;height:42px;border-radius:50%;border:2.5px solid var(--hair);display:grid;place-items:center;transition:border-color .3s ease,background .3s ease}
+.gcc__go svg{width:16px;height:16px;fill:none;stroke:var(--ink);stroke-width:1.8;transition:stroke .3s ease}
+.gcc:hover .gcc__en,.gcc:hover .gcc__kr,.gcc:hover .gcc__desc{color:#fff}
+.gcc:hover .gcc__go{border-color:#fff;background:#fff}
+.gcc:hover .gcc__go svg{stroke:var(--accent)}
+@media (max-width:1080px){ .gcontact__cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:480px){ .gcontact__cards{grid-template-columns:1fr} .gcc{min-height:0} }
+
+/* 메인 작은 글 키움 */
+.ghead__kr{font-size:clamp(17px,1.35vw,21px)}
+.gstep__kr{font-size:clamp(16px,1.15vw,18px)}
+.gstep__desc{font-size:clamp(14px,1vw,16px)}
+.gwhy__q{font-size:clamp(17px,1.35vw,21px)}
+.gcc__desc{font-size:15px}
+.gshop__copy p{font-size:clamp(16px,1.3vw,20px)}
+/* 네 가지 기준 — 선명하지 않은 항목도 읽을 수 있을 만큼은 보이게 */
+.gwhy__item{opacity:.38;transition:opacity .45s ease}
+.gwhy__item.is-on{opacity:1}
+
+/* 네 가지 기준 — 모바일은 고정 이미지 대신 항목마다 자기 이미지가 글과 함께 스크롤 (2026-11-12) */
+.gwhy__mpic{display:none}
+@media (max-width:767px){
+  .gwhy__media{display:none}
+  .gwhy__mpic{display:block;width:100%;aspect-ratio:4/3;margin:0 0 22px}
+  .gwhy__mpic img{display:block;width:100%;height:100%;object-fit:cover}
+  .gwhy__item,.gwhy__item.is-on{min-height:0;opacity:1;padding-block:28px}
+  .gwhy__item + .gwhy__item{border-top:1px solid var(--line)}
+}

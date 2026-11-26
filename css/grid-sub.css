@@ -1,0 +1,871 @@
+/* =========================================================
+   GRID 시안 — 상세페이지 정리 레이아웃 (2026-11-05 · "글자나 이미지가 중구난방")
+   · 모든 블록을 같은 폭(최대 1480px) 안에 정렬 — 화면 끝까지 붙는 사진 없음
+   · 제목 → 본문을 위아래로 (좌우로 흩어진 2단 머리 없앰), 글자 크기 한 단계로 통일
+   · 사진은 같은 카드 규격(둥근 모서리), 비율 3가지만(4:5 · 4:3 · 21:9)
+   · 계단식으로 어긋나던 글(translate), 거대한 제목·기울인 숫자 정리
+   ========================================================= */
+:root{--cw:1480px;--sgut:clamp(20px,4.2vw,80px);--side:max(var(--sgut),calc((100% - var(--cw)) / 2))}
+
+/* 섹션 간격 하나로 */
+.sub-body .dp{padding-block:clamp(70px,7vw,130px)}
+.sub-body .dp + .dp{padding-top:0}
+.sub-body .dp--tint{background:transparent}
+.sub-body .dp__in{max-width:var(--cw);padding-inline:var(--sgut)}
+
+/* 머리 — 라벨 · 제목 · 본문을 한 줄로 쌓는다 */
+.sub-body .dp-head{display:block;max-width:980px}
+.sub-body .dp-head .dp-body{margin-top:clamp(18px,1.8vw,28px)}
+.sub-body .dp-title{font-size:clamp(28px,2.7vw,44px)!important;line-height:1.38!important;letter-spacing:-.01em}
+.sub-body .dp-title em{font-style:normal;font-weight:inherit;color:var(--accent)}
+.sub-body .dp-body p,.sub-body .dp-lead{font-size:clamp(15px,1.05vw,17px);line-height:1.9;letter-spacing:0;color:var(--ink-2)}
+.sub-body .dp-lead{color:var(--ink)}
+.sub-body .dp-quote{font-size:clamp(24px,2.4vw,38px);line-height:1.45;max-width:900px}
+
+/* 3·2열 항목 — 기울인 큰 숫자 대신 작은 오렌지 번호 */
+.sub-body .dp-grid{gap:clamp(28px,3vw,48px);margin-top:clamp(40px,4vw,64px)}
+.sub-body .dp-item{border-top:1px solid var(--hair);padding-top:22px}
+.sub-body .dp-item__no{font-style:normal;font-size:14px;line-height:1;color:var(--accent);letter-spacing:.06em}
+.sub-body .dp-item h4{font-size:clamp(18px,1.4vw,22px);margin-top:14px}
+.sub-body .dp-facts{border-top-color:var(--hair)}
+.sub-body .dp-facts dd{font-size:clamp(17px,1.4vw,22px)}
+
+/* 사진 + 글 블록 3종(band · tall · bleed) → 모두 같은 2단: 사진 카드 | 글, 폭 맞춤 */
+.sub-body .dp-band,.sub-body .dp-tall,.sub-body .dp-bleed{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(36px,5vw,90px);
+  margin:clamp(70px,7vw,130px) var(--side);background:transparent;
+}
+.sub-body .dp-band + .dp-band{margin-top:clamp(56px,5vw,96px)}
+.sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{
+  margin:0;height:auto;min-height:0;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)
+}
+.sub-body .dp-tall__img{aspect-ratio:4/5}
+.sub-body .dp-band__img img,.sub-body .dp-tall__img img,.sub-body .dp-bleed__img img{width:100%;height:100%;object-fit:cover;border-radius:0!important}
+.sub-body .dp-band__copy,.sub-body .dp-band--rev .dp-band__copy,.sub-body .dp-tall__copy,.sub-body .dp-tall--rev .dp-tall__copy,
+.sub-body .dp-bleed__copy,.sub-body .dp-bleed--rev .dp-bleed__copy{padding:0;max-width:none;justify-self:stretch;gap:0}
+.sub-body .dp-band__t,.sub-body .dp-tall__t{font-size:clamp(24px,2.2vw,36px)!important;line-height:1.4!important;letter-spacing:-.01em}
+.sub-body .dp-band__copy p,.sub-body .dp-bleed__copy p:not(.dp-acc){max-width:none;font-size:clamp(15px,1.05vw,17px);line-height:1.9;letter-spacing:0}
+.sub-body .dp-tall__notes{display:block;margin-top:clamp(18px,1.8vw,28px);padding:0!important}
+.sub-body .dp-tall__notes p{font-size:clamp(15px,1.05vw,17px);line-height:1.9;letter-spacing:0}
+.sub-body .dp-tall__notes p + p{transform:none;margin-top:1em}
+/* 사진 좌우는 번갈아 — 순서만 바꾸고 폭은 같게 */
+.sub-body .dp-band--rev .dp-band__img,.sub-body .dp-bleed--rev .dp-bleed__img{order:2}
+.sub-body .dp-tall--rev .dp-tall__img{order:-1}
+
+/* 사진 묶음 — 같은 폭, 같은 높이 */
+.sub-body .dp-pics{padding-inline:0;margin:clamp(56px,5vw,96px) var(--side)}
+.sub-body .dp-pics .ph{border-radius:var(--r);box-shadow:var(--shadow)}
+.sub-body .dp-pics--3 .ph{aspect-ratio:4/5}
+.sub-body .dp-pics--wv .ph,.sub-body .dp-pics--vw .ph{height:auto;aspect-ratio:4/3}
+.sub-body .dp-pics--wv,.sub-body .dp-pics--vw{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sub-body .dp-pics figcaption{font-size:12px;letter-spacing:.14em}
+
+/* 큰 가로 사진 — 같은 폭 안에서 21:9 */
+.sub-body .dp-full{margin-inline:var(--side)!important}
+.sub-body .dp-full img,.sub-body .dp-full--tall img{aspect-ratio:21/9}
+
+@media (max-width:860px){
+  .sub-body .dp-band,.sub-body .dp-tall,.sub-body .dp-bleed{grid-template-columns:1fr;gap:26px}
+  .sub-body .dp-band--rev .dp-band__img,.sub-body .dp-bleed--rev .dp-bleed__img,.sub-body .dp-tall--rev .dp-tall__img{order:-1}
+  .sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{order:-1;aspect-ratio:4/3}
+  .sub-body .dp-pics--wv,.sub-body .dp-pics--vw{grid-template-columns:1fr}
+  .sub-body .dp-full img,.sub-body .dp-full--tall img{aspect-ratio:4/3}
+}
+
+/* 머리말 · 탭도 본문과 같은 왼쪽 선에 */
+.sub .subhead .wrap,.sub .subtabs .wrap{padding-inline:var(--side)}
+
+/* 상세페이지 폭 = 헤더 폭 (왼쪽 로고 ~ 오른쪽 KR/EN 끝) — 화면이 넓어도 최대폭으로 줄이지 않는다 */
+:root{--side:var(--gut);--sgut:var(--gut)}
+.sub-body .dp__in{max-width:none}
+.sub .subhead .wrap,.sub .subtabs .wrap{max-width:none;margin-inline:0}
+
+/* 머리말 가운데 정렬 — 라벨 · 제목 · 하위 메뉴를 가운데에. 옆 장식 그림은 가운데 제목과 겹쳐서 뺀다 */
+.sub .subhead__vis{display:none}
+.sub .subhead__top .wrap{text-align:center;padding-bottom:clamp(36px,3.6vw,64px)}
+.sub .subhead .label{justify-content:center}
+.sub .subhead__title{margin-inline:auto}
+
+/* 하위 메뉴 — 밑줄 탭 대신 가운데 둥근 알약 버튼 묶음 */
+.sub .subtabs{border:0;background:transparent;margin:0;padding-bottom:clamp(10px,1vw,20px)}
+.sub .subtabs__in{justify-content:center;flex-wrap:wrap;gap:10px;overflow:visible}
+.sub .subtabs a{
+  padding:11px 24px;border:1.5px solid var(--hair);border-radius:999px;color:var(--ink-2);font-size:14px;line-height:1;
+  transition:border-color .3s ease,background .3s ease,color .3s ease
+}
+.sub .subtabs a::after{display:none!important}
+.sub .subtabs a:hover{border-color:var(--accent);color:var(--accent)}
+.sub .subtabs a[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (max-width:767px){
+  .sub .subtabs__in{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+  .sub .subtabs a{flex:none;padding:10px 18px;font-size:13px}
+}
+
+/* 하위 메뉴 v2 — 버튼 대신 글자만 가운데 정렬, 지금 페이지는 진하게 + 아래 오렌지 점 (메뉴 펼침과 같은 결) */
+.sub .subtabs__in{gap:clamp(22px,2.6vw,46px)}
+.sub .subtabs a,.sub .subtabs a:hover,.sub .subtabs a[aria-current="page"]{
+  position:relative;padding:10px 0 16px;border:0;border-radius:0;background:none;font-size:15px;color:#9A918A
+}
+.sub .subtabs a:hover{color:var(--ink)}
+.sub .subtabs a[aria-current="page"]{color:var(--ink)}
+.sub .subtabs a::after{
+  display:block!important;content:"";position:absolute;left:50%;right:auto;bottom:2px;width:6px;height:6px;margin-left:-3px;
+  border-radius:50%;background:var(--accent)!important;transform:scale(0)!important;transition:transform .35s cubic-bezier(.16,1,.3,1)!important
+}
+.sub .subtabs a[aria-current="page"]::after{transform:scale(1)!important}
+.sub .subtabs a:hover::after{transform:scale(.6)!important}
+@media (max-width:767px){ .sub .subtabs a,.sub .subtabs a:hover,.sub .subtabs a[aria-current="page"]{padding:8px 0 14px;font-size:14px} .sub .subtabs__in{gap:22px} }
+
+/* 문의 카드 연락처 */
+.sub-body .ct-links{margin-top:16px!important;color:var(--ink)!important;font-size:15px!important;line-height:1.8}
+.sub-body .ct-links a{border-bottom:1px solid var(--hair)}
+.sub-body .ct-links a:hover{color:var(--accent);border-color:var(--accent)}
+.sub-body [id]{scroll-margin-top:calc(var(--head) + 30px)}
+
+/* 상세페이지 제목은 모두 한 줄 — 좁은 화면에서는 글자 크기를 화면 폭에 맞춰 줄인다 */
+.sub .subhead__title{white-space:nowrap}
+@media (max-width:767px){ .sub .subhead__title{font-size:min(8.2vw,40px)} }
+
+/* Technology 메뉴(careCL Technology · Product) 머리말 배경 — 42396.jpg 물방울 사진을 흐리고 연하게 (assets/img/t-head-bubble.jpg)
+   화면 맨 위(헤더 뒤)부터 하위 메뉴까지 깔린다 (아래 흰 그라데이션 없음) */
+.sub .subhead--technology{position:relative;isolation:isolate}
+.sub .subhead--technology::before{
+  content:"";position:absolute;left:0;right:0;top:calc(-1 * var(--head));bottom:0;z-index:-1;
+  background:url(../assets/img/t-head-bubble.jpg) center 40%/cover no-repeat;
+}
+
+/* 하위 메뉴(탭) 없앰 — 헤더 메뉴 펼침으로 이동 */
+.sub .subtabs{display:none}
+
+/* Aging Lab 머리말 — Technology와 같은 방식: 화면 맨 위(헤더 뒤)부터 머리말 끝까지 깔리는 배경.
+   예전 여자 사진(h-model.jpg)을 넓은 배경으로 다시 짜서 살짝 흐리고 연하게 (assets/img/a-head-model.jpg) */
+.sub .subhead--aging-lab{position:relative;isolation:isolate}
+.sub .subhead--aging-lab::before{
+  content:"";position:absolute;left:0;right:0;top:calc(-1 * var(--head));bottom:0;z-index:-1;
+  background:url(../assets/img/a-head-model.jpg) right 30%/cover no-repeat;
+}
+@media (max-width:767px){ .sub .subhead--aging-lab::before{background-position:85% 30%} }
+
+/* 머리말 글 묶음(라벨 ~ 제목 글자 바닥)을 배경 띠의 세로 가운데로 — 위 여백은 줄이고 아래는 늘려 높이는 그대로 */
+.sub .subhead{padding-top:clamp(48px,5.2vw,100px)}
+.sub .subhead__top .wrap{padding-bottom:clamp(50px,4.9vw,90px)}
+
+/* About careCL 제품 라인업 큰 사진 — 높이 조금 더 (21:9 → 2:1) */
+.sub-body .dp-full--tall img{aspect-ratio:2/1!important}
+@media (max-width:860px){ .sub-body .dp-full--tall img{aspect-ratio:4/3!important} }
+
+/* 세로 인물 사진이 들어가는 사진+글 블록 — 4:5로 얼굴이 잘리지 않게 */
+.sub-body .dp-band__img--portrait{aspect-ratio:4/5!important}
+.sub-body .dp-band__img--portrait img{object-position:50% 20%}
+
+/* ── 읽기 좋게 (본문이 작고 흐리다는 의견) ─────────────────────────
+   · 본문 17~19px · 굵기 400 · 더 진한 색 · 한 줄 길이 제한(약 36자)으로 줄바꿈 정리
+   · 사진+글 블록은 한 화면 안에 들어오게 사진 높이를 화면 높이로 제한 */
+.sub-body .dp-body p,.sub-body .dp-lead,.sub-body .dp-band__copy p:not(.dp-band__t),.sub-body .dp-bleed__copy p:not(.dp-acc):not(.dp-band__t),
+.sub-body .dp-tall__notes p,.sub-body .dp-item p{
+  font-size:clamp(16px,1.25vw,19px)!important;line-height:1.85!important;color:#433B35!important;letter-spacing:-.005em!important
+}
+.sub-body .dp-head{max-width:880px}
+.sub-body .dp-body,.sub-body .dp-band__copy,.sub-body .dp-tall__copy,.sub-body .dp-bleed__copy{max-width:36em}
+.sub-body .dp-title{font-size:clamp(30px,3vw,48px)!important}
+.sub-body .dp-band__t,.sub-body .dp-tall__t{font-size:clamp(28px,2.6vw,42px)!important;margin-bottom:.1em}
+.sub-body .dp-label{font-size:13px}
+.sub-body .dp-item h4{font-size:clamp(20px,1.6vw,26px)}
+/* 사진은 한 화면 안에 — 세로 사진은 화면 높이에 맞춰 폭을 줄이고 가운데 */
+.sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{
+  width:min(100%,calc((100svh - var(--head) - 120px) * var(--ar,1.333)));justify-self:center
+}
+.sub-body .dp-tall__img,.sub-body .dp-band__img--portrait{--ar:.8}
+/* 사진과 글을 세로 가운데로, 섹션 간격은 한 화면에 한 묶음이 보이게 */
+.sub-body .dp-band,.sub-body .dp-tall,.sub-body .dp-bleed{align-items:center;margin-block:clamp(80px,9vh,140px)}
+@media (max-width:860px){
+  .sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{width:100%}
+  .sub-body .dp-body,.sub-body .dp-band__copy,.sub-body .dp-tall__copy,.sub-body .dp-bleed__copy{max-width:none}
+}
+
+/* 사진이 칸보다 좁아질 때 글 쪽으로 붙인다 (가운데 빈 틈 없이) */
+.sub-body .dp-band__img,.sub-body .dp-bleed__img{justify-self:end}
+.sub-body .dp-band--rev .dp-band__img,.sub-body .dp-bleed--rev .dp-bleed__img{justify-self:start}
+.sub-body .dp-tall__img{justify-self:start}
+.sub-body .dp-tall--rev .dp-tall__img{justify-self:end}
+@media (max-width:860px){ .sub-body .dp-band__img,.sub-body .dp-bleed__img,.sub-body .dp-tall__img{justify-self:stretch} }
+
+/* v2 — 사진 폭은 칸에 꽉 채우고(위치 일정), 높이만 화면 안으로 자른다 (넘치면 사진 위아래가 살짝 잘림) */
+.sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{
+  width:100%!important;justify-self:stretch!important;max-height:calc(100svh - var(--head) - 120px)
+}
+.sub-body .dp-band__img img,.sub-body .dp-tall__img img,.sub-body .dp-bleed__img img{object-position:50% 30%}
+@media (max-width:860px){ .sub-body .dp-band__img,.sub-body .dp-tall__img,.sub-body .dp-bleed__img{max-height:none} }
+
+/* 큰 가로 사진을 자르지 않고 전부 보이게 — 사진은 가운데 통째로, 남는 양옆은 같은 사진을 흐리게 깔아 채운다 */
+.sub-body .dp-full--fit{position:relative;isolation:isolate}
+.sub-body .dp-full--fit::before{content:"";position:absolute;inset:-40px;z-index:-1;background:var(--bg) center/cover no-repeat;filter:blur(60px) saturate(.9);opacity:.75}
+.sub-body .dp-full--fit img{object-fit:contain!important;background:transparent}
+.sub-body .dp-full--fit:hover img{transform:none}
+
+/* About — 넓은 살구색 배경 사진 위에 글 (위 제품 사진과 같은 폭·높이) */
+.sub-body .ab-wide{position:relative;margin:clamp(70px,7vw,130px) var(--side);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:2/1}
+.sub-body .ab-wide__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center;border-radius:0!important}
+.sub-body .ab-wide__copy{position:absolute;left:52%;right:6%;top:50%;transform:translateY(-50%)}
+.sub-body .ab-wide__copy .dp-band__t{margin:0}
+.sub-body .ab-wide__copy p:not(.dp-band__t){margin:1em 0 0;font-size:clamp(16px,1.25vw,19px);line-height:1.85;color:#433B35}
+@media (max-width:860px){
+  .sub-body .ab-wide{aspect-ratio:auto;display:flex;flex-direction:column;background:#F6DCCB}
+  .sub-body .ab-wide__bg{position:relative;height:auto;aspect-ratio:4/3;object-position:left center}
+  .sub-body .ab-wide__copy{position:static;transform:none;padding:26px 22px 30px}
+}
+
+/* R&D 숫자 결과 — 가운데 TECH FIT, 양옆 엇갈린 카드에 숫자가 올라간다 */
+.sub-body .tres--center{display:block}
+.sub-body .tres--center .tres__head{text-align:center;max-width:760px;margin:0 auto}
+.sub-body .tres--center .tres__head .dp-label{justify-content:center}
+.sub-body .tres--center .tres__note{text-align:center;margin:clamp(30px,3vw,50px) 0 0}
+.tres2{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.7fr) minmax(0,1fr);align-items:center;gap:clamp(16px,2vw,40px);margin-top:clamp(40px,4vw,70px)}
+.tres2__col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tres2__col .tcard:nth-child(even){translate:0 42%}
+.tres2__col--r .tcard:nth-child(odd){translate:0 42%}
+.tres2__col--r .tcard:nth-child(even){translate:none}
+.tcard{display:flex;flex-direction:column;justify-content:flex-end;gap:10px;min-height:clamp(150px,13vw,200px);padding:clamp(18px,1.6vw,26px);
+  border-radius:var(--r);background:#fff;box-shadow:var(--shadow);border:1px solid rgba(30,26,23,.05)}
+.tcard .tres__v{min-width:0;text-align:left;font-size:clamp(28px,2.6vw,44px);font-weight:400}
+.tcard .tres__k{font-size:clamp(14px,1vw,16px);line-height:1.5;color:#433B35}
+.tres2__dev{position:relative;margin:0;display:grid;place-items:center;height:clamp(380px,36vw,540px)}
+.tres2__dev::before{content:"";position:absolute;width:120%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(224,102,43,.18),rgba(224,102,43,0) 62%)}
+.tres2__dev img{position:relative;height:clamp(380px,36vw,540px);width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(30,20,10,.22));border-radius:0!important}
+@media (max-width:1080px){
+  .tres2{grid-template-columns:1fr}
+  .tres2__dev{order:-1;height:360px}
+  .tres2__dev img{height:340px}
+  .tres2__col .tcard,.tres2__col--r .tcard{translate:none!important}
+}
+
+/* Our Story 마지막 문구 — 물방울 사진(6254)을 흐리게 깐 둥근 큰 카드, 글은 가운데 */
+.sub-body .dp--quotecard .qcard{
+  position:relative;overflow:hidden;border-radius:var(--r);box-shadow:var(--shadow);
+  padding:clamp(70px,8vw,140px) clamp(24px,5vw,90px);text-align:center;
+  background:url(../assets/img/g-quote-bubble.jpg) center/cover no-repeat
+}
+.sub-body .dp--quotecard .dp-quote{margin-inline:auto;text-align:center}
+.sub-body .dp--quotecard .dp-cta{justify-content:center}
+
+/* About 살구색 카드 v2 — 높이를 줄이고(3:1) 사진은 높이에 맞춰 왼쪽에(여성이 작아짐), 나머지는 같은 살구색. 글은 크게 */
+.sub-body .ab-wide{aspect-ratio:3/1;background:linear-gradient(180deg,#FED3C2,#FED9C9 50%)}
+.sub-body .ab-wide__bg{width:auto;height:100%;right:auto;object-fit:contain;object-position:left center}
+.sub-body .ab-wide__copy{left:46%;right:5%}
+.sub-body .ab-wide__copy .dp-band__t{font-size:clamp(30px,3vw,52px)!important;line-height:1.35!important}
+.sub-body .ab-wide__copy p:not(.dp-band__t){font-size:clamp(17px,1.4vw,22px)!important;margin-top:1.1em}
+@media (max-width:860px){
+  .sub-body .ab-wide{aspect-ratio:auto}
+  .sub-body .ab-wide__bg{width:100%;height:auto;object-fit:cover}
+}
+
+/* 본문 한 단계 더 크게 (17~19px → 18~21px) */
+.sub-body .dp-body p,.sub-body .dp-lead,.sub-body .dp-band__copy p:not(.dp-band__t),.sub-body .dp-bleed__copy p:not(.dp-acc):not(.dp-band__t),
+.sub-body .dp-tall__notes p,.sub-body .dp-item p,.sub-body .ab-wide__copy p:not(.dp-band__t){font-size:clamp(17px,1.4vw,21px)!important;line-height:1.8!important}
+.sub-body .dp-body,.sub-body .dp-band__copy,.sub-body .dp-tall__copy,.sub-body .dp-bleed__copy{max-width:34em}
+.sub-body .tcard .tres__k,.sub-body .dp-facts dd{font-size:clamp(16px,1.15vw,19px)}
+
+/* 본문 한 단계 더 (18~21px → 19~23px), 제목도 함께 */
+.sub-body .dp-body p,.sub-body .dp-lead,.sub-body .dp-band__copy p:not(.dp-band__t),.sub-body .dp-bleed__copy p:not(.dp-acc):not(.dp-band__t),
+.sub-body .dp-tall__notes p,.sub-body .dp-item p,.sub-body .ab-wide__copy p:not(.dp-band__t){font-size:clamp(18px,1.55vw,23px)!important;line-height:1.75!important}
+.sub-body .dp-body,.sub-body .dp-band__copy,.sub-body .dp-tall__copy,.sub-body .dp-bleed__copy{max-width:32em}
+.sub-body .dp-title{font-size:clamp(32px,3.3vw,54px)!important}
+.sub-body .dp-band__t,.sub-body .dp-tall__t{font-size:clamp(30px,2.9vw,46px)!important}
+.sub-body .dp-label{font-size:14px}
+.sub-body .dp-item h4{font-size:clamp(21px,1.75vw,28px)}
+.sub-body .tcard .tres__k,.sub-body .dp-facts dd{font-size:clamp(17px,1.3vw,20px)}
+
+/* About 살구색 카드 — 배경 더 연하게(about-carecl02-bg-light.jpg) + 제목 위에 둥둥 떠 있는 TECH FIT (불릿) */
+.sub-body .ab-wide{background:linear-gradient(180deg,#FEE9E0,#FEEBE4 50%)}
+.ab-float{position:relative;display:block;width:clamp(44px,3.4vw,60px);height:clamp(110px,8.4vw,150px);margin:0 0 clamp(14px,1.4vw,24px) 6px}
+.ab-float img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:rotate(-24deg);
+  filter:drop-shadow(0 14px 14px rgba(120,60,30,.22));animation:abFloat 3.6s ease-in-out infinite}
+.ab-float::after{content:"";position:absolute;left:10%;right:-10%;bottom:-10px;height:10px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(120,60,30,.22),rgba(120,60,30,0));animation:abShadow 3.6s ease-in-out infinite}
+@keyframes abFloat{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@keyframes abShadow{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.75);opacity:.55}}
+@media (prefers-reduced-motion:reduce){.ab-float img,.ab-float::after{animation:none}}
+@media (max-width:860px){ .sub-body .ab-wide{background:#FEEAE2} }
+/* About 첫 소개 문장 — 두 줄로 (줄 길이 제한 풀기) */
+.sub-body .dp-body:has(.ab-intro){max-width:none}
+.sub-body .ab-intro{white-space:nowrap}
+@media (max-width:860px){ .sub-body .ab-intro{white-space:normal} .sub-body .ab-intro br{display:none} }
+.sub-body .dp-head:has(.ab-intro){max-width:none}
+/* 떠 있는 기기 — 눕히지 않고 똑바로 */
+.ab-float img{transform:none}
+.ab-float{width:clamp(36px,2.8vw,50px)}
+
+/* 각 섹션 제목 위 작은 영문 라벨(● Our Story 등) — 주황색 */
+.sub-body .dp-label{color:var(--accent)!important}
+
+/* Our Story 04 Method 사진 — 오른쪽 위 '5초' 타이머: 살구색 글씨 + 5초마다 한 바퀴 차오르는 링과 바늘 */
+.sub-body .dp-band__img--timer{position:relative}
+.t5{position:absolute;top:clamp(14px,1.8vw,26px);right:clamp(14px,1.8vw,26px);width:clamp(72px,6.4vw,104px);aspect-ratio:1;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 26px -12px rgba(120,60,30,.35)}
+.t5 svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.t5__track{fill:none;stroke:rgba(244,168,128,.28);stroke-width:4}
+.t5__ring{fill:none;stroke:#F4A880;stroke-width:4;stroke-linecap:round;stroke-dasharray:276.5;stroke-dashoffset:276.5;animation:t5ring 5s linear infinite}
+.t5__hand{transform-origin:50px 50px;animation:t5hand 5s linear infinite}
+.t5__hand line{stroke:#F4A880;stroke-width:2.5;stroke-linecap:round;opacity:.7}
+.t5 b{position:relative;font-family:var(--f-title);font-weight:400;font-size:clamp(26px,2.4vw,40px);line-height:1;color:#F09A6C;letter-spacing:-.02em}
+.t5 b small{font-size:.42em;margin-left:2px;font-family:"SUIT",sans-serif}
+@keyframes t5ring{0%{stroke-dashoffset:276.5}92%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes t5hand{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.t5__ring{animation:none;stroke-dashoffset:0}.t5__hand{animation:none}}
+/* 5초 타이머 — 더 크고 또렷하게 (어두운 머리카락 위에서도 보이게) */
+.t5{width:clamp(96px,8.4vw,136px);background:rgba(255,255,255,.88)}
+.t5__track{stroke:rgba(240,150,105,.22);stroke-width:5}
+.t5__ring{stroke:#EE8E5E;stroke-width:5}
+.t5__hand line{stroke:#EE8E5E;opacity:.55}
+.t5 b{font-size:clamp(34px,3vw,52px);color:#E9834F}
+/* 5초 타이머 v2 — 배경·바늘 없이, 도는 링 + 빛나는 살구색 글씨만 */
+.t5{background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.t5__track{stroke:rgba(255,214,190,.35)}
+.t5__ring{stroke:#FFC9A8;filter:drop-shadow(0 0 4px rgba(255,170,120,.9))}
+.t5__hand{display:none}
+.t5 b{color:#FFD3B6;text-shadow:0 0 10px rgba(255,160,110,.95),0 0 22px rgba(255,140,90,.7),0 0 2px rgba(255,255,255,.9)}
+
+/* Our Story 마지막 문구 카드 — 오른쪽 아래 아주 큰 주황 careCL 로고, 흐릿하게 */
+.qcard{isolation:isolate}
+.qcard__logo{position:absolute;z-index:-1;right:-6%;bottom:-18%;width:min(78%,1100px);color:var(--accent);
+  opacity:.32;filter:blur(10px);pointer-events:none}
+.qcard__logo svg{display:block;width:100%;height:auto}
+.qcard > *:not(.qcard__logo){position:relative}
+
+/* Our Story 01~04 지그재그 — 모두 같은 틀: 글 | 사진(또는 번호 박스), 다음 칸은 좌우 반대 */
+.sub-body .zz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(40px,6vw,110px);margin:clamp(90px,10vw,170px) var(--side)}
+.sub-body .zz__t{margin:22px 0 0;font-family:var(--f-title);font-weight:400;font-size:clamp(30px,2.9vw,46px);line-height:1.35;letter-spacing:-.01em;color:var(--ink)}
+.sub-body .zz__copy p:not(.dp-label){margin:clamp(18px,1.6vw,26px) 0 0;font-size:clamp(17px,1.35vw,20px);line-height:1.8;color:#433B35}
+.sub-body .zz__copy strong{color:var(--accent);font-weight:400}
+.sub-body .zz__acc{color:var(--accent)!important}
+.sub-body .zz__img{margin:0;aspect-ratio:4/3;max-height:calc(100svh - var(--head) - 120px);width:100%;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);position:relative}
+.sub-body .zz__img img{width:100%;height:100%;object-fit:cover;border-radius:0!important}
+/* 03 번호 박스 — 주황 네모 번호 + 질문 */
+.sub-body .zz__nums{list-style:none;margin:0;padding:0;display:grid;gap:clamp(12px,1.2vw,18px)}
+.sub-body .zz__nums li{display:flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(18px,1.8vw,28px) clamp(20px,2vw,32px);
+  border-radius:var(--r);background:#fff;box-shadow:var(--shadow);border:1px solid rgba(224,102,43,.12);transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .3s ease}
+.sub-body .zz__nums li:hover{transform:translateX(8px);border-color:var(--accent)}
+.sub-body .zz__no{flex:none;display:grid;place-items:center;width:clamp(56px,4.6vw,72px);aspect-ratio:1;border-radius:clamp(12px,1vw,16px);
+  background:var(--accent);color:#fff;font-family:var(--f-title);font-size:clamp(20px,1.7vw,26px);letter-spacing:.02em;box-shadow:0 10px 22px -10px rgba(224,102,43,.7)}
+.sub-body .zz__nums li:nth-child(2) .zz__no{background:#E9834F}
+.sub-body .zz__nums li:nth-child(3) .zz__no{background:#F0A177}
+.sub-body .zz__nums b{font-weight:400;font-size:clamp(19px,1.6vw,25px);line-height:1.4;color:var(--ink)}
+@media (max-width:860px){
+  .sub-body .zz{grid-template-columns:1fr;gap:26px}
+  .sub-body .zz--rev .zz__img{order:-1}
+  .sub-body .zz:not(.zz--rev) .zz__img{order:-1}
+  .sub-body .zz__copy p br{display:none}
+}
+
+/* Our Story 문구 카드 v2 — 흐린 물방울 위에 반투명 주황을 깔고 글·버튼은 흰색, 큰 로고는 잘리지 않게 안쪽으로 */
+.sub-body .dp--quotecard .qcard{background:linear-gradient(rgba(224,102,43,.62),rgba(224,102,43,.62)),url(../assets/img/g-quote-bubble.jpg) center/cover no-repeat}
+.sub-body .dp--quotecard .dp-quote,.sub-body .dp--quotecard .dp-quote small{color:#fff!important}
+.sub-body .dp--quotecard .btn-line{border-color:#fff;color:#fff;background:transparent}
+.sub-body .dp--quotecard .btn-line:hover{background:#fff;color:var(--accent)}
+.qcard__logo{right:4%;bottom:7%;width:min(58%,820px);color:#B8460F;opacity:.42;filter:blur(8px)}
+/* 문구 카드 큰 문장 — 더 두껍게 (SUIT 600), 아래 작은 문장은 그대로 */
+.sub-body .dp--quotecard .dp-quote{font-weight:600!important}
+.sub-body .dp--quotecard .dp-quote .lat,.sub-body .dp--quotecard .dp-quote .en{font-weight:600!important;-webkit-text-stroke:.6px currentColor!important}
+.sub-body .dp--quotecard .dp-quote small,.sub-body .dp--quotecard .dp-quote small *{font-weight:400!important;-webkit-text-stroke:0!important}
+
+/* ── 세로 여백 정리 (너무 넓다는 의견) — 섹션 사이 간격을 한 단계로 맞춰 줄임 ── */
+:root{--vgap:clamp(56px,6vw,104px)}
+.sub-body .dp{padding-block:var(--vgap)}
+.sub-body .dp + .dp{padding-top:0}
+.sub-body .zz,.sub-body .dp-band,.sub-body .dp-tall,.sub-body .dp-bleed,.sub-body .ab-wide,.sub-body .dp-pics{margin-block:var(--vgap)!important}
+.sub-body .dp-band + .dp-band{margin-top:calc(var(--vgap) * .7)!important}
+.sub-body .dp-full{margin-top:clamp(36px,3.6vw,60px)}
+.sub-body .dp > .dp-full:first-child{margin-top:0}
+.sub-body .dp-grid,.sub-body .dp-facts{margin-top:clamp(32px,3vw,52px)}
+.sub-body > section:first-child{padding-top:clamp(40px,4vw,72px)!important}
+.sub-body .dp-head .dp-body{margin-top:clamp(14px,1.4vw,22px)}
+.sub + .foot,.foot{margin-top:clamp(56px,5vw,96px)}
+/* About 살구색 카드 v3 — 떠 있는 기기 뺌, 글은 세로 가운데, 여성 조금 더 크게(카드 높이 3:1 → 2.5:1) */
+.sub-body .ab-wide{aspect-ratio:5/2}
+/* About 첫 큰 사진(늘린이미지) — 사진 비율 그대로(2078:757), 자르지 않음 */
+.sub-body .dp-full--native img{aspect-ratio:2078/757!important;object-fit:cover}
+@media (max-width:860px){ .sub-body .dp-full--native img{aspect-ratio:2078/757!important} }
+/* About 살구색 카드 — 제목과 문장 사이 주황 바 */
+.ab-bar{display:block;width:clamp(44px,3.6vw,64px);height:3px;border-radius:3px;background:var(--accent);margin:clamp(20px,2vw,32px) 0 0}
+.sub-body .ab-wide__copy .ab-bar + p{margin-top:clamp(18px,1.8vw,28px)!important}
+
+/* R&D 숫자 결과 v2 — 진한 둥근 판 위에, 가운데 빛기둥 + 기기, 양옆 작은 반투명 카드 (쥬베룩 구도 참고) */
+.sub-body #results .tres--center{
+  position:relative;overflow:hidden;isolation:isolate;
+  margin-inline:var(--side);max-width:none;padding:clamp(56px,5.6vw,100px) clamp(24px,4vw,72px) clamp(50px,5vw,90px);
+  border-radius:calc(var(--r) * 1.3);
+  background:radial-gradient(120% 90% at 50% 100%,#2A1C15 0%,#140E0B 55%,#0C0807 100%);
+  box-shadow:0 40px 80px -40px rgba(20,10,5,.6)
+}
+.sub-body #results .tres--center::before{  /* 가운데 빛기둥 */
+  content:"";position:absolute;z-index:-1;left:50%;top:0;bottom:0;width:clamp(220px,22vw,360px);translate:-50% 0;
+  background:linear-gradient(180deg,rgba(255,222,200,.0) 0%,rgba(255,214,188,.55) 28%,rgba(255,200,165,.5) 70%,rgba(255,190,150,.15) 100%);
+  filter:blur(18px)
+}
+.sub-body #results .tres--center::after{  /* 바닥 반사광 */
+  content:"";position:absolute;z-index:-1;left:50%;bottom:-6%;width:60%;height:26%;translate:-50% 0;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,170,120,.35),rgba(255,170,120,0))
+}
+.sub-body #results{background:transparent}
+.sub-body #results .tres__head .dp-title,.sub-body #results .tres__head .dp-body,.sub-body #results .tres__head .dp-body *{color:#fff!important}
+.sub-body #results .tres__head .dp-body{opacity:.82}
+.sub-body #results .tres__note{color:rgba(255,255,255,.6)!important}
+.sub-body #results .tres2__dev::before{display:none}
+.sub-body #results .tres2__dev img{filter:drop-shadow(0 30px 40px rgba(0,0,0,.45))}
+/* 카드 — 더 작게, 어두운 반투명 + 얇은 테두리, 흰 글씨 */
+.sub-body #results .tres2__col{gap:12px}
+.sub-body #results .tcard{min-height:clamp(112px,9vw,150px);padding:clamp(14px,1.3vw,20px);gap:6px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);box-shadow:none;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.sub-body #results .tcard .tres__v{font-size:clamp(24px,2.1vw,36px);color:#FF9A62}
+.sub-body #results .tcard .tres__k{font-size:clamp(13px,.95vw,15px)!important;color:rgba(255,255,255,.88);line-height:1.45}
+.sub-body #results .tres2{grid-template-columns:minmax(0,1fr) minmax(180px,.6fr) minmax(0,1fr);max-width:1100px;margin-inline:auto}
+@media (max-width:1080px){ .sub-body #results .tres--center::before{width:60%;height:420px;bottom:auto} }
+/* R&D 숫자 결과 머리 — 라벨·제목·설명 모두 정확히 가운데 (설명 칸 폭 제한을 가운데로, 라벨 점은 빼서 글자 중심을 맞춤) */
+.sub-body #results .tres__head .dp-body{max-width:34em;margin-inline:auto}
+.sub-body #results .tres__head .dp-label::before{display:none}
+.sub-body #results .tres__head .dp-label{justify-content:center}
+.sub-body #results .tres__head .dp-label{color:#FF9A62!important}
+
+/* R&D 숫자 결과 v3 — 카드를 기기 둘레 원형으로 (왼쪽 4개 · 오른쪽 3개가 둥글게 감싼다), 카드 글은 가운데 */
+@media (min-width:1081px){
+  .sub-body #results .tres2{position:relative;display:block;height:clamp(560px,46vw,680px);max-width:none;
+    --rx:clamp(300px,29vw,440px);--ry:clamp(200px,17vw,250px)}
+  .sub-body #results .tres2__col{display:contents}
+  .sub-body #results .tres2__dev{position:absolute;left:50%;top:50%;translate:-50% -50%;height:auto}
+  .sub-body #results .tcard{position:absolute;left:calc(50% + cos(var(--a)) * var(--rx));top:calc(50% + sin(var(--a)) * var(--ry));
+    width:clamp(150px,12.5vw,186px);min-height:0;translate:-50% -50%!important}
+  .sub-body #results .tres2__col--l .tcard:nth-child(1){--a:228deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(2){--a:196deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(3){--a:164deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(4){--a:132deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(1){--a:-42deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(2){--a:0deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(3){--a:42deg}
+}
+.sub-body #results .tcard{align-items:center;justify-content:center;text-align:center}
+.sub-body #results .tcard .tres__v{text-align:center}
+.sub-body #results .tcard .tres__k{font-size:clamp(12px,.82vw,13.5px)!important;color:rgba(255,255,255,.82)}
+/* 기기 — 흰 테두리처럼 보이던 빛기둥 대신 뒤 원형 은은한 빛 + 바닥 반사, 가장자리 정리한 누끼 */
+.sub-body #results .tres--center::before{left:50%;top:50%;bottom:auto;width:clamp(360px,34vw,520px);height:clamp(360px,34vw,520px);translate:-50% -38%;
+  border-radius:50%;background:radial-gradient(closest-side,rgba(255,170,120,.30),rgba(255,140,90,.10) 60%,rgba(255,140,90,0));filter:none}
+.sub-body #results .tres2__dev img{height:clamp(300px,27vw,420px);filter:drop-shadow(0 26px 30px rgba(0,0,0,.55)) brightness(.97)}
+.sub-body #results .tres2__dev::after{content:"";position:absolute;left:50%;bottom:-14px;width:120%;height:22px;translate:-50% 0;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,180,140,.28),rgba(255,180,140,0))}
+@media (max-width:1080px){
+  .sub-body #results .tres2{grid-template-columns:1fr}
+  .sub-body #results .tres2__col{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sub-body #results .tres--center{padding-inline:16px}
+}
+
+/* R&D 숫자 결과 v4 — 높이 줄임 · 기기 크게 · 왼쪽 3 / 오른쪽 3 / 아래 1 · 같은 크기 카드 · 카드와 기기를 잇는 선 */
+.sub-body #results .tres--center{padding:clamp(40px,4vw,68px) clamp(24px,4vw,72px) clamp(36px,3.4vw,56px)}
+.sub-body #results .tres2{margin-top:clamp(20px,2vw,34px)}
+.sub-body #results .tcard{width:212px!important;height:96px;min-height:0!important;padding:12px 10px;gap:4px}
+.sub-body #results .tcard .tres__k{white-space:nowrap}
+.sub-body #results .tcard .tres__v{font-size:clamp(24px,2vw,32px)}
+.tres2__lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}
+.tres2__lines path{fill:none;stroke:rgba(255,170,125,.55);stroke-width:1.2}
+.tres2__lines circle{fill:#FF9A62}
+@media (min-width:1081px){
+  .sub-body #results .tres2{height:clamp(470px,38vw,560px);--rx:clamp(300px,26vw,390px);--ry:clamp(110px,9vw,140px);--cy:42%}
+  .sub-body #results .tres2__dev{top:0;translate:-50% 0;z-index:1}
+  .sub-body #results .tres2__dev img{height:clamp(340px,28vw,430px)}
+  .sub-body #results .tcard{z-index:1;top:calc(var(--cy) + sin(var(--a)) * var(--ry))}
+  .sub-body #results .tres2__col--l .tcard:nth-child(1){--a:212deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(2){--a:180deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(3){--a:148deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(4){left:50%;top:auto;bottom:0;translate:-50% 0!important}
+  .sub-body #results .tres2__col--r .tcard:nth-child(1){--a:-32deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(2){--a:0deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(3){--a:32deg}
+}
+@media (max-width:1080px){ .tres2__lines{display:none} .sub-body #results .tcard{width:auto!important} }
+@media (min-width:1081px){ .sub-body #results .tres2{--ry:clamp(200px,16vw,232px);--rx:clamp(310px,27vw,400px)} }
+
+/* R&D 숫자 결과 v5 — 선 없음, 카드 7개를 기기 둘레 원호(왼쪽 위 → 아래 → 오른쪽 위)에 같은 각도 간격으로 */
+.tres2__lines{display:none}
+@media (min-width:1081px){
+  .sub-body #results .tres2{height:clamp(540px,43vw,620px);--rx:clamp(330px,27vw,400px);--ry:clamp(210px,16vw,232px);--cy:36%}
+  .sub-body #results .tres2__dev img{height:clamp(300px,25vw,360px)}
+  .sub-body #results .tcard{left:calc(50% + cos(var(--a)) * var(--rx))!important;top:calc(var(--cy) + sin(var(--a)) * var(--ry))!important;bottom:auto!important;translate:-50% -50%!important}
+  .sub-body #results .tres2__col--l .tcard:nth-child(1){--a:215deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(2){--a:173.33deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(3){--a:131.67deg}
+  .sub-body #results .tres2__col--l .tcard:nth-child(4){--a:90deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(1){--a:-35deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(2){--a:6.67deg}
+  .sub-body #results .tres2__col--r .tcard:nth-child(3){--a:48.33deg}
+}
+/* v5.1 — 타원 대신 원(같은 반지름)으로 해서 카드 7개 사이 간격을 똑같이, 높이도 낮춤 */
+@media (min-width:1081px){
+  .sub-body #results .tres2{height:486px;--rx:236px;--ry:236px;--cy:200px}
+  .sub-body #results .tres2__dev{top:calc(var(--cy) - 180px);translate:-50% 0}
+  .sub-body #results .tres2__dev img{height:360px}
+}
+/* 아래 카드 위치 보정(예전 규칙이 더 구체적이라 덮어씀) + 각주는 판 바깥 아래로 */
+@media (min-width:1081px){ .sub-body #results .tres2__col--l .tcard:nth-child(4){translate:-50% -50%!important;top:calc(var(--cy) + sin(var(--a)) * var(--ry))!important;bottom:auto!important} }
+.sub-body #results .tres__note--out{display:block;text-align:center;margin:18px var(--side) 0!important;color:var(--ink-2)!important;font-size:13px}
+/* v5.2 — 원 반지름을 넓혀 카드 간격을 더 벌림 */
+@media (min-width:1081px){ .sub-body #results .tres2{height:590px;--rx:292px;--ry:292px;--cy:240px} }
+/* v5.3 — 아래쪽 카드끼리 겹치지 않게 반지름 더 넓히고 카드 폭 조금 줄임 */
+@media (min-width:1081px){
+  .sub-body #results .tres2{height:650px;--rx:330px;--ry:330px;--cy:262px}
+  .sub-body #results .tcard{width:196px!important}
+}
+/* v6 — 보내주신 그림처럼: 위·가운데·아래 줄 간격 똑같이, 좌우 대칭, 가운데 줄이 가장 넓게 둥근 모양 + 맨 아래 가운데 1개
+   (원 반지름 R=2s 위의 점: 줄 y = -s, 0, +s, +2s / 가로 = ±0.87R, ±R, ±0.87R, 0) */
+@media (min-width:1081px){
+  .sub-body #results .tres2{height:590px;--s:150px;--cy:220px}
+  .sub-body #results .tres2__dev{top:calc(var(--cy) - 180px)}
+  .sub-body #results .tcard{left:calc(50% + var(--x))!important;top:calc(var(--cy) + var(--y))!important;translate:-50% -50%!important}
+  .sub-body #results .tres2__col--l .tcard:nth-child(1){--x:-260px;--y:calc(var(--s) * -1)}
+  .sub-body #results .tres2__col--l .tcard:nth-child(2){--x:-300px;--y:0px}
+  .sub-body #results .tres2__col--l .tcard:nth-child(3){--x:-260px;--y:var(--s)}
+  .sub-body #results .tres2__col--l .tcard:nth-child(4){--x:0px;--y:calc(var(--s) * 2)}
+  .sub-body #results .tres2__col--r .tcard:nth-child(1){--x:260px;--y:calc(var(--s) * -1)}
+  .sub-body #results .tres2__col--r .tcard:nth-child(2){--x:300px;--y:0px}
+  .sub-body #results .tres2__col--r .tcard:nth-child(3){--x:260px;--y:var(--s)}
+}
+@media (min-width:1081px){ .sub-body #results .tres2__col--l .tcard:nth-child(4){left:50%!important;top:calc(var(--cy) + var(--s) * 2)!important} }
+
+/* 모든 상세페이지 — 본문 시작(머리말 아래)과 끝(푸터 위) 여백을 똑같이 */
+.sub-body{padding-block:var(--vgap)}
+.sub-body > :first-child{margin-top:0!important;padding-top:0!important}
+.sub-body > :last-child{margin-bottom:0!important;padding-bottom:0!important}
+.sub-body > :last-child > .dp__in > :last-child{margin-bottom:0}
+body:has(main.sub) .foot{margin-top:0!important}
+.sub-body > section:first-child,.sub-body > section.dp:first-child{padding-top:0!important;margin-top:0!important}
+
+/* Contact — 문의 종류 4개를 깔끔한 카드로 (번호 · 영문 제목 · 한글 이름 · 화살표), 설명·연락처는 아래 공통 정보 한 곳에만 */
+.ct-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.2vw,20px);margin-top:clamp(32px,3vw,52px)}
+.ct-card{position:relative;display:flex;flex-direction:column;min-height:clamp(200px,16vw,250px);padding:clamp(22px,2vw,32px);
+  border-radius:var(--r);background:#F7F4F1;transition:background .4s ease,transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease}
+.ct-card:hover{background:var(--accent);transform:translateY(-6px);box-shadow:var(--shadow)}
+.ct-card__no{font-family:var(--f-title);font-size:14px;color:var(--accent);letter-spacing:.06em;transition:color .3s ease}
+.ct-card__en{margin-top:auto;font-family:var(--f-title);font-weight:400!important;font-size:clamp(22px,1.8vw,30px);line-height:1.2;color:var(--ink);transition:color .3s ease}
+.ct-card__kr{margin-top:8px;font-size:clamp(15px,1.1vw,17px);color:var(--ink-2);transition:color .3s ease}
+.ct-card__go{position:absolute;top:clamp(18px,1.6vw,26px);right:clamp(18px,1.6vw,26px);width:40px;height:40px;border-radius:50%;
+  border:2px solid rgba(30,26,23,.14);display:grid;place-items:center;transition:background .3s ease,border-color .3s ease}
+.ct-card__go svg{width:16px;height:16px;fill:none;stroke:var(--ink);stroke-width:1.8;transition:stroke .3s ease}
+.ct-card:hover .ct-card__no,.ct-card:hover .ct-card__en,.ct-card:hover .ct-card__kr{color:#fff}
+.ct-card:hover .ct-card__go{background:#fff;border-color:#fff}
+.ct-card:hover .ct-card__go svg{stroke:var(--accent)}
+@media (max-width:1080px){ .ct-cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:480px){ .ct-cards{grid-template-columns:1fr} .ct-card{min-height:150px} }
+
+/* Contact 머리 — 건물 사진(careCL 간판) 넓은 카드 위 왼쪽에 제목·안내 */
+.ct-hero{position:relative;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:2079/756;min-height:300px}
+.ct-hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 50%;border-radius:0!important}
+.ct-hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.55) 34%,rgba(255,255,255,0) 58%)}
+.ct-hero__copy{position:absolute;z-index:2;left:clamp(24px,4vw,64px);top:50%;transform:translateY(-50%);max-width:48%}
+.ct-hero__copy .dp-title{margin-top:12px}
+.ct-hero__body{margin:clamp(14px,1.4vw,22px) 0 0;font-size:clamp(16px,1.25vw,19px);line-height:1.75;color:#433B35}
+.sub-body #location .dp-facts{grid-template-columns:1fr}
+@media (max-width:860px){
+  .ct-hero{aspect-ratio:auto;min-height:0;display:flex;flex-direction:column}
+  .ct-hero__bg{position:relative;height:auto;aspect-ratio:16/9}
+  .ct-hero::before{display:none}
+  .ct-hero__copy{position:static;transform:none;max-width:none;padding:22px}
+  .ct-hero__body br{display:none}
+}
+.ct-hero__copy{max-width:38%}
+
+/* Contact 문의 카드 v2 — 사진 배경 + 아래쪽 어두운 그라데이션 위 흰 글씨, 마우스를 올리면 사진이 살짝 확대되고 주황빛 */
+.ct-card{overflow:hidden;isolation:isolate;aspect-ratio:4/5;min-height:0;background:#1a1410;justify-content:flex-end}
+.ct-card__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;border-radius:0!important;transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.ct-card::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(15,10,8,.15) 0%,rgba(15,10,8,.05) 35%,rgba(15,10,8,.78) 100%);transition:background .5s ease}
+.ct-card__no{position:absolute;top:clamp(18px,1.6vw,26px);left:clamp(22px,2vw,32px);color:#fff;opacity:.9}
+.ct-card__en,.ct-card__kr{color:#fff}
+.ct-card__kr{opacity:.85}
+.ct-card__go{border-color:rgba(255,255,255,.55)}
+.ct-card__go svg{stroke:#fff}
+.ct-card:hover{background:#1a1410}
+.ct-card:hover .ct-card__bg{transform:scale(1.07)}
+.ct-card:hover::before{background:linear-gradient(180deg,rgba(224,102,43,.25) 0%,rgba(224,102,43,.15) 40%,rgba(160,60,20,.85) 100%)}
+@media (max-width:480px){ .ct-card{aspect-ratio:16/10} }
+.ct-card{cursor:default}
+/* 섹션 사이 간격 한 번만 — 글 섹션(.dp)의 안쪽 여백과 이웃 블록의 바깥 여백이 겹쳐 두 배가 되던 곳 정리 */
+.sub-body .dp:has(+ :not(.dp)){padding-bottom:0}
+.sub-body :not(.dp) + .dp{padding-top:0}
+.sub-body .dp > .dp__in > :first-child{margin-top:0!important}
+
+/* R&D 숫자 결과 v7 — 어두운 판 대신 사이트 톤에 맞춘 살구빛 그라데이션 + 기기 뒤 흰 빛, 카드는 흰 유리 느낌 */
+.sub-body #results .tres--center{
+  background:
+    radial-gradient(48% 62% at 50% 46%,rgba(255,255,255,.95) 0%,rgba(255,255,255,.5) 38%,rgba(255,255,255,0) 70%),
+    linear-gradient(160deg,#FDF1E9 0%,#F9DCCB 48%,#F3C2A5 100%);
+  box-shadow:0 30px 70px -40px rgba(190,100,50,.45)
+}
+.sub-body #results .tres--center::before{display:none}
+.sub-body #results .tres--center::after{background:radial-gradient(closest-side,rgba(224,102,43,.18),rgba(224,102,43,0))}
+.sub-body #results .tres__head .dp-title,.sub-body #results .tres__head .dp-body,.sub-body #results .tres__head .dp-body *{color:var(--ink)!important}
+.sub-body #results .tres__head .dp-body{opacity:.85}
+.sub-body #results .tres__head .dp-label{color:var(--accent)!important}
+.sub-body #results .tcard{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 14px 30px -18px rgba(170,85,40,.45);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.sub-body #results .tcard .tres__v{color:var(--accent)}
+.sub-body #results .tcard .tres__k{color:#4A423C}
+.sub-body #results .tres2__dev img{filter:drop-shadow(0 26px 28px rgba(150,70,30,.28))}
+.sub-body #results .tres2__dev::after{background:radial-gradient(closest-side,rgba(190,100,50,.25),rgba(190,100,50,0))}
+/* R&D 특허증 — 뒤 회색 판·그림자 없이 특허증만 */
+.sub-body .dp-tall__img--doc{background:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible}
+.sub-body .dp-tall__img--doc img{width:min(72%,480px)!important;box-shadow:0 18px 40px -20px rgba(30,20,10,.35)}
+
+/* ── 상세페이지 블록 간격 통일 — 본문의 큰 묶음(섹션 · 사진 · 카드)은 모두 같은 간격 하나로 ──
+   섹션 자체의 위아래 안쪽 여백은 없애고, 이웃한 묶음 사이에만 --blk 를 둔다 */
+:root{--blk:clamp(64px,7vw,112px)}
+.sub-body > *{margin-top:0!important;margin-bottom:0!important}
+.sub-body > section,.sub-body > div{padding-top:0!important;padding-bottom:0!important}
+.sub-body > * + *{margin-top:var(--blk)!important}
+.sub-body{padding-block:var(--blk)!important}
+/* 묶음 안: 머리(라벨·제목·설명) → 내용 간격도 한 값으로 */
+.sub-body .dp__in > * + *{margin-top:clamp(32px,3.2vw,52px)}
+.sub-body .ct-cards{margin-top:clamp(16px,1.4vw,22px)!important}
+/* 위 규칙이 일부 블록의 더 구체적인 여백 규칙에 밀려서 — :not(#_)로 우선순위를 올려 확실히 통일 */
+.sub-body > *:not(#_){margin-top:0!important;margin-bottom:0!important}
+.sub-body > * + *:not(#_){margin-top:var(--blk)!important}
+.sub-body > section:not(#_),.sub-body > div:not(#_){padding-top:0!important;padding-bottom:0!important}
+
+/* ── 상세페이지 제목·소제목 통일 ──
+   · 섹션 제목(dp-title · zz__t · dp-band__t · dp-tall__t · tcta__t)은 모두 같은 크기
+   · 제목 위 영문 소제목(dp-label · tcta__label …)은 모두 같은 모양: 주황 점 + 주황 글자 14px */
+.sub-body .dp-title,.sub-body .zz__t,.sub-body .dp-band__t,.sub-body .dp-tall__t,.sub-body .tcta__t,.sub-body .ab-wide__copy .dp-band__t{
+  font-size:clamp(30px,2.9vw,46px)!important;line-height:1.36!important;letter-spacing:-.01em!important
+}
+.sub-body .tcta__t small{font-size:.32em;letter-spacing:.12em}
+.sub-body .dp-label,.sub-body .tcta__label,.sub-body .why5__head .dp-label{
+  display:flex;align-items:center;gap:.7em;margin:0;font-family:var(--f-ui);font-size:14px!important;letter-spacing:.2em!important;
+  line-height:1.6!important;color:var(--accent)!important;text-transform:none
+}
+.sub-body .tcta__label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.sub-body .dp-label::before{background:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)!important}
+.sub-body .dp-label + .dp-title,.sub-body .dp-label + .zz__t,.sub-body .dp-label + .dp-band__t,.sub-body .tcta__label + .tcta__t{margin-top:18px!important}
+/* 사진+글 블록 안의 소제목도 같은 모양으로 (본문 문단 규칙보다 우선) */
+.sub-body .dp-band__copy p.dp-label,.sub-body .dp-bleed__copy p.dp-label,.sub-body .zz__copy p.dp-label,.sub-body .dp-tall__copy p.dp-label{
+  font-size:14px!important;letter-spacing:.2em!important;line-height:1.6!important;color:var(--accent)!important;margin:0!important
+}
+/* 소제목 통일 마무리 — 사진 블록 안 소제목이 본문 규칙에 밀리지 않게 */
+.sub-body p.dp-label:not(#_){font-size:14px!important;letter-spacing:.2em!important;line-height:1.6!important;color:var(--accent)!important}
+/* 긴 소개 문장 두 줄로 — 줄 길이 제한을 풀고, 화면이 좁으면 자연스럽게 줄바꿈 */
+.sub-body .dp-head:has(.p-2line),.sub-body .dp-body:has(.p-2line){max-width:none!important}
+@media (min-width:1200px){ .sub-body .p-2line{white-space:nowrap;font-size:clamp(16px,1.25vw,19px)!important} }
+@media (max-width:1199px){ .sub-body .p-2line br{display:none} }
+/* Aging Lab 머리말 v2 — 얼굴 전체가 담긴 살구 배경 모델 사진(m-model)으로, 얼굴이 잘리지 않게 위쪽 기준 */
+.sub .subhead--aging-lab::before{background:url(../assets/img/a-head-model2.jpg) right top/cover no-repeat}
+@media (max-width:767px){ .sub .subhead--aging-lab::before{background-position:82% top} }
+/* Technology 마지막 얼굴 그리드 사진 — 아래쪽(어깨)을 흰색 그라데이션으로 자연스럽게 사라지게 */
+.sub-body .tcta__vis img{-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 62%,rgba(0,0,0,0) 98%);mask-image:linear-gradient(180deg,#000 0%,#000 62%,rgba(0,0,0,0) 98%)}
+/* Technology 마지막 버튼 — 다른 버튼(btn-line)과 같은 크기, 'TECH FIT 보기'는 주황 두꺼운 테두리 */
+.sub-body .tcta__btn{display:inline-flex;align-items:center;gap:.5em;padding:.95em 2.4em!important;font-family:var(--f-ui);
+  font-size:clamp(12px,.97vw,15px)!important;letter-spacing:.02em;line-height:1;border-radius:999px!important;
+  border:2.5px solid var(--accent)!important;color:var(--accent)!important;background:transparent!important;transition:background .3s ease,color .3s ease}
+.sub-body .tcta__btn:hover{background:var(--accent)!important;color:#fff!important}
+.sub-body .tcta__btn--fill{background:var(--accent)!important;color:#fff!important}
+.sub-body .tcta__btn--fill:hover{background:var(--ink)!important;border-color:var(--ink)!important}
+.sub-body .tcta__btn i{font-style:normal}
+.sub-body .btn-line{border-width:2.5px}
+.sub-body .tcta__btn{line-height:1.6!important}
+/* Aging Lab 머리말 v3 — '배경.png' 사진, 가운데 기준(화면이 넓어져도 가운데가 보이게, 얼굴이 잘리지 않게 위쪽 우선) */
+.sub .subhead--aging-lab::before{background:url(../assets/img/a-head-bg.jpg) center 18%/cover no-repeat}
+@media (max-width:767px){ .sub .subhead--aging-lab::before{background-position:center 18%} }
+.sub-body .tcta__btn--fill:hover{background:#B8501C!important;border-color:#B8501C!important;color:#fff!important}
+
+/* 6 Aging Types '왜 같은 나이인데도…' — 사진 없이 연한 살구 둥근 박스, 가운데 정렬, 제목·글 사이 주황 바 */
+.sub-body .why-box{margin-inline:var(--side)!important;padding:clamp(52px,5.4vw,90px) clamp(24px,5vw,90px)!important;border-radius:var(--r);
+  background:#FDF0E8;text-align:center}
+.sub-body .why-box__t{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(28px,2.6vw,42px);line-height:1.36;letter-spacing:-.01em;color:var(--ink)}
+.sub-body .why-box .ab-bar{margin:clamp(20px,2vw,30px) auto 0}
+.sub-body .why-box p{margin:clamp(18px,1.6vw,26px) auto 0;max-width:none;font-size:clamp(16px,1.2vw,19px);line-height:1.85;color:#433B35}
+.sub-body .why-box .ab-bar + p{margin-top:clamp(20px,2vw,30px)}
+@media (max-width:1100px){ .sub-body .why-box p br{display:none} }
+.sub-body .why-box .why-box__t{max-width:none!important;margin-inline:auto}
+.sub-body > section.why-box:not(#_){padding:clamp(56px,5.6vw,96px) clamp(24px,5vw,90px)!important}
+
+/* 6 Aging Types 출처(Reference) — 큰 박스 대신 사진 카드 오른쪽 가장자리에 세로로 작게 */
+.sub-body .dp-bleed__img--ref{position:relative}
+.refbar{position:absolute;top:0;right:0;bottom:0;margin:0;display:flex;align-items:center;justify-content:center;gap:.7em;
+  writing-mode:vertical-rl;padding:16px 10px;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font-family:var(--f-ui);font-size:12px;letter-spacing:.06em;color:#4A423C;white-space:nowrap}
+.refbar em{font-style:normal;color:var(--accent);letter-spacing:.16em}
+.refbar b{font-weight:400;color:var(--accent)}
+.refbar i{font-style:normal;color:var(--accent)}
+@media (max-width:860px){
+  .refbar{writing-mode:horizontal-tb;top:auto;left:0;padding:10px 14px;font-size:11px;white-space:normal;flex-wrap:wrap;justify-content:flex-start}
+}
+/* '왜 같은 나이인데도…' 박스 배경 — 밋밋하지 않게: 살구 그라데이션 + 양 끝 은은한 주황 빛 + 큰 원 두 개 */
+.sub-body .why-box{position:relative;overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(60% 70% at 50% 50%,rgba(246,248,250,.72),rgba(246,248,250,.28) 100%),
+    url(../assets/img/a-why-bg.jpg) center/cover no-repeat,#E9EDF1!important}
+.sub-body .why-box::before,.sub-body .why-box::after{content:"";position:absolute;z-index:-1;pointer-events:none}
+.sub-body .why-box::before,.sub-body .why-box::after{display:none}
+.sub-body .why-box > *{position:relative}
+/* Technology 마지막 (얼굴 그리드) — 화면 끝까지 붙던 사진도 다른 블록처럼 좌우 여백 안으로 */
+.sub-body .tcta--split{margin-inline:var(--side)!important;width:auto;column-gap:clamp(36px,5vw,90px)}
+.sub-body .tcta--split .tcta__copy{padding-left:0!important}
+.sub-body .tcta__vis{margin:0!important}
+
+/* 출처 박스 — 원래 박스 그대로, 'Reference' 제목만 박스 오른쪽에 세로로 */
+.sub-body .refbox--side{display:flex;align-items:stretch;gap:0;padding:0!important;overflow:hidden;max-width:560px}
+.sub-body .refbox--side .refbox__body{flex:1;padding:clamp(18px,1.6vw,26px)}
+.sub-body .refbox--side p.refbox__k{margin:0!important;writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
+  padding:12px 9px;background:#FDF0E8;border-left:1px solid var(--hair);font-size:11px!important;letter-spacing:.24em!important;color:var(--accent)!important}
+.sub-body .refbox--side .refbox__row b{font-size:clamp(15px,1.1vw,18px)}
+.sub-body .refbox--side .refbox__row span{font-size:13px}
+.sub-body .refbox--side .refbox__arr{margin:6px 0}
+
+/* About 살구색 카드 — 오른쪽이 밋밋하지 않게: 은은한 주황빛 · 흰 빛 · 큰 원 테두리 (사진 뒤가 아닌 오른쪽 빈 곳에) */
+.sub-body .ab-wide{isolation:isolate;
+  background:
+    radial-gradient(30% 60% at 92% 20%,rgba(255,255,255,.75),rgba(255,255,255,0) 70%),
+    radial-gradient(34% 70% at 82% 92%,rgba(240,140,90,.22),rgba(240,140,90,0) 70%),
+    linear-gradient(110deg,#FEEBE3 0%,#FDE6DB 50%,#FAD7C5 100%)!important}
+.sub-body .ab-wide::before,.sub-body .ab-wide::after{content:"";position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.sub-body .ab-wide::before{width:clamp(280px,30vw,460px);aspect-ratio:1;right:-8%;top:-30%;border:1.5px solid rgba(224,102,43,.16)}
+.sub-body .ab-wide::after{width:clamp(160px,16vw,250px);aspect-ratio:1;right:14%;bottom:-34%;border:1.5px solid rgba(224,102,43,.12);
+  background:radial-gradient(closest-side,rgba(255,255,255,.5),rgba(255,255,255,0))}
+.sub-body .ab-wide__bg{z-index:1}
+.sub-body .ab-wide__copy{z-index:2}
+.sub-body .ab-wide__bg{-webkit-mask-image:linear-gradient(90deg,#000 70%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(90deg,#000 70%,rgba(0,0,0,0) 100%)}
+
+/* 6 Aging Types 카드 v5 — 한 줄에 6개 · 처음엔 얼굴+이름만, 마우스를 올리면 설명이 떠오름 */
+.sub-body .dp-grid:has(.dp-item--flip){grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(10px,1vw,18px)}
+.sub-body .dp-item--flip{display:grid;position:relative;padding:0;border:0;border-radius:var(--r);overflow:hidden;
+  background:#fff;box-shadow:var(--shadow);outline:none;cursor:default}
+.sub-body .dp-item--flip > div{grid-area:1/1;min-width:0}
+/* 앞면 — 얼굴 · 번호 · 이름 */
+.sub-body .dp-item__front{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:clamp(22px,2vw,30px) clamp(12px,1vw,18px);transition:opacity .45s ease,transform .45s ease}
+.sub-body .dp-item--flip .dp-item__face{position:relative;width:84%;max-width:none;aspect-ratio:1/1;margin:0 0 clamp(14px,1.2vw,20px);
+  border-radius:50%;background:#fff;box-shadow:none;overflow:hidden}
+.sub-body .dp-item__face img{position:absolute;left:50%;bottom:0;width:74%;height:auto;transform:translateX(-50%);object-fit:contain;border-radius:0!important}
+.sub-body .dp-item--flip .dp-item__no{margin:0;font-size:13px}
+.sub-body .dp-item--flip h4{margin:6px 0 0;font-size:clamp(18px,1.35vw,22px)!important;line-height:1.3;color:var(--ink)}
+.sub-body .dp-item--flip h4 small{display:block;min-height:2.8em;margin-top:4px;font-size:10.5px;letter-spacing:.1em;line-height:1.4;color:var(--accent)}
+/* 뒷면 — 문구 · 설명 · 대표 고민 */
+.sub-body .dp-item__more{display:flex;flex-direction:column;padding:clamp(20px,1.8vw,26px) clamp(14px,1.2vw,20px);
+  background:linear-gradient(165deg,#FFF8F3 0%,#FCEADF 100%);opacity:0;transform:translateY(14px);pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease}
+.sub-body .dp-item--flip .dp-quoteline{margin:0!important;font-size:clamp(14px,1vw,15.5px)!important;line-height:1.55!important;color:var(--accent)!important}
+.sub-body .dp-item--flip .dp-item__more p:not(.dp-quoteline):not(.dp-tags){margin:10px 0 14px!important;font-size:clamp(13.5px,.95vw,15px)!important;line-height:1.7!important;color:#433B35!important}
+.sub-body .dp-item--flip .dp-tags{margin:auto 0 0!important;padding-top:12px;border-top:1px solid rgba(224,102,43,.2);display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.sub-body .dp-item--flip .dp-tags b{width:100%;margin:0 0 2px;font-size:11px;letter-spacing:.16em;color:var(--ink-2)}
+.sub-body .dp-item--flip .dp-tags span{padding:4px 9px;border-radius:999px;background:#fff;color:#B8501C;font-size:12px}
+@media (hover:hover){
+  .sub-body .dp-item--flip:hover .dp-item__front,.sub-body .dp-item--flip:focus-visible .dp-item__front{opacity:0;transform:translateY(-14px)}
+  .sub-body .dp-item--flip:hover .dp-item__more,.sub-body .dp-item--flip:focus-visible .dp-item__more{opacity:1;transform:none;pointer-events:auto}
+}
+/* 마우스가 없는 기기(터치) — 앞뒤를 위아래로 모두 보여줌 */
+@media (hover:none){
+  .sub-body .dp-item--flip{display:flex;flex-direction:column}
+  .sub-body .dp-item__more{opacity:1;transform:none;pointer-events:auto;background:none;padding-top:0}
+  .sub-body .dp-item__front{padding-bottom:16px}
+}
+@media (max-width:1300px){ .sub-body .dp-grid:has(.dp-item--flip){grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:820px){ .sub-body .dp-grid:has(.dp-item--flip){grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){
+  .sub-body .dp-grid:has(.dp-item--flip){grid-template-columns:1fr}
+  .sub-body .dp-item--flip .dp-item__face{width:56%}
+}
+/* Aging Map '먼저 관리할 곳부터 순서대로.' 사진 — 위 '22개의 좌표' 사진과 같은 높이(4:3) */
+.sub-body .dp-tall__img--short:not(#_){aspect-ratio:4/3}
+/* Technology '세 가지 모드' — 모드 버튼은 왼쪽에 세로 한 줄, 내용은 오른쪽 · 사진은 작게 */
+@media (min-width:561px){
+  .sub-body .modes{display:grid;grid-template-columns:clamp(150px,18vw,230px) minmax(0,1fr);column-gap:clamp(20px,4vw,64px);align-items:start;margin-top:clamp(32px,3vw,52px)}
+  .sub-body .modes__tabs:not(#_){grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:10px;overflow:visible;margin-inline:0;padding-inline:0;position:sticky;top:calc(var(--head,72px) + 24px)}
+  .sub-body .modes__tabs .mtab{width:100%;min-width:0;padding:14px 16px}
+  .sub-body .modes__panels{grid-column:2;grid-row:1;min-width:0}
+  .sub-body .mpanel{margin-top:0;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,3vw,56px);align-items:center}
+  .sub-body .mpanel__vis:not(#_){aspect-ratio:1/1;max-width:400px;width:100%}
+  .sub-body .mpanel__t{margin-top:12px;font-size:clamp(24px,2.1vw,34px)}
+}
+@media (min-width:561px) and (max-width:1100px){
+  .sub-body .mpanel{grid-template-columns:1fr;gap:24px}
+  .sub-body .mpanel__vis:not(#_){max-width:300px}
+}
+/* '세 가지 모드' v2 — 리드 문장 한 줄 · 왼쪽 버튼과 오른쪽 카드(사진+본문)의 위아래를 맞춤 */
+#modes .dp-body{max-width:none}
+@media (min-width:900px){ #modes .dp-lead{white-space:nowrap} }
+@media (min-width:561px){
+  .sub-body .modes{align-items:stretch}
+  .sub-body .modes__tabs:not(#_){position:static;height:100%}
+  .sub-body .mpanel{height:100%;box-sizing:border-box;padding:clamp(20px,2.4vw,36px);border-radius:var(--r);background:#fff;box-shadow:var(--shadow)}
+  .sub-body .mpanel__vis:not(#_){border-radius:calc(var(--r) - 6px)}
+  .sub-body .mpanel__copy .dp-label{margin-top:0}
+  .sub-body .mpanel__body p:last-child{margin-bottom:0}
+}
+@media (min-width:1101px){
+  .sub-body .modes__tabs .mtab{flex:1 1 0;min-height:0;align-content:center}
+  /* 사진 칸이 본문 높이만큼 세로로 채워져 카드 하나로 보이게 */
+  .sub-body .mpanel{align-items:stretch}
+  .sub-body .mpanel__vis:not(#_){aspect-ratio:auto;max-width:none;height:100%;min-height:320px}
+  .sub-body .mpanel__copy{align-self:center}
+}
+/* Technology 'How to Use' v2 — 단계 박스 3개 + 아래 가운데 영상 */
+.sub-body .howto2 .dp-title{white-space:nowrap}
+.sub-body .howto2__steps{list-style:none;margin:clamp(28px,3vw,48px) 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,22px);counter-reset:none}
+.sub-body .howto2__steps li{position:relative;display:flex;flex-direction:column;padding:clamp(22px,2.2vw,32px);border-radius:var(--r);background:#FBF6F2;border:1px solid rgba(224,102,43,.14)}
+.sub-body .howto2__no{font-size:14px;letter-spacing:.06em;color:var(--accent)}
+.sub-body .howto2__mode{position:absolute;top:clamp(22px,2.2vw,32px);right:clamp(22px,2.2vw,32px);padding:4px 11px;border-radius:999px;background:#fff;
+  font-family:var(--f-ui);font-weight:400;font-size:11.5px;letter-spacing:.16em;color:#B8501C;border:1px solid rgba(224,102,43,.28)}
+.sub-body .howto2__steps p{margin:clamp(18px,1.6vw,26px) 0 0!important;font-size:clamp(16px,1.2vw,19px)!important;line-height:1.6!important;color:var(--ink)!important;word-break:keep-all}
+.sub-body .howto2__plan{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 24px;margin-top:clamp(14px,1.4vw,22px);padding:16px clamp(18px,2vw,28px);border-radius:var(--r);background:#F5F6F8}
+.sub-body .howto2__plan strong{font-weight:400;color:var(--ink);font-size:clamp(14.5px,1.05vw,16px)}
+.sub-body .howto2__plan span{color:var(--ink-2);font-size:clamp(13.5px,.98vw,15px)}
+.sub-body .howto2__vid{max-width:none;width:100%;margin:clamp(40px,4vw,64px) 0 0!important}
+@media (max-width:860px){
+  .sub-body .howto2 .dp-title{white-space:normal}
+  .sub-body .howto2__steps{grid-template-columns:1fr}
+  .sub-body .howto2__steps p br{display:none}
+}
+/* Technology 'Why 5 Seconds' 본문을 제목처럼 가운데로 */
+.sub-body .why5__head .dp-body{max-width:none;margin-inline:auto}
+/* How to Use 단계 박스 v2 — 모드 색(SHOT 빨강 · GLOW 보라 · EMS 무지개) · LED 9점 아이콘 · 큰 번호 · 단계 화살표 */
+.sub-body .howto2__steps li{--c:var(--led-red);overflow:visible;isolation:isolate;padding-top:clamp(26px,2.4vw,36px);
+  background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--c) 10%,transparent),transparent 60%),#fff;
+  border:1px solid color-mix(in srgb,var(--c) 22%,transparent);box-shadow:0 18px 40px -26px color-mix(in srgb,var(--c) 60%,transparent);
+  transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s ease}
+.sub-body .howto2__steps li:hover{transform:translateY(-4px);box-shadow:0 26px 50px -24px color-mix(in srgb,var(--c) 70%,transparent)}
+.sub-body .howto2__s--glow{--c:var(--led-purple)!important}
+.sub-body .howto2__s--ems{--c:#FF8A3D!important}
+/* 큰 번호 — 배경에 은은하게 */
+.sub-body .howto2__steps li::before{content:attr(data-n);position:absolute;right:clamp(16px,1.6vw,26px);bottom:clamp(4px,.6vw,10px);z-index:-1;
+  font-family:var(--f-en,inherit);font-size:clamp(70px,7vw,112px);line-height:1;color:color-mix(in srgb,var(--c) 12%,transparent);pointer-events:none}
+.sub-body .howto2__s--shot::before{content:"01"!important}
+.sub-body .howto2__s--glow::before{content:"02"!important}
+.sub-body .howto2__s--ems::before{content:"03"!important}
+/* LED 9점 아이콘(디바이스 헤드) */
+.sub-body .howto2__ic{display:block;width:46px;height:46px;margin-bottom:16px;border-radius:12px;padding:8px;box-sizing:border-box;
+  background:radial-gradient(circle,var(--c) 0 3.2px,transparent 3.8px) 0 0/10px 10px content-box,color-mix(in srgb,var(--c) 9%,#fff);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 25%,transparent),0 0 18px -4px color-mix(in srgb,var(--c) 55%,transparent)}
+.sub-body .howto2__s--ems .howto2__ic{background:
+  radial-gradient(circle,#fff 0 3.2px,transparent 3.8px) 0 0/10px 10px content-box,
+  conic-gradient(var(--led-red),var(--led-yellow),var(--led-green),var(--led-purple),var(--led-red)) content-box,#fff}
+.sub-body .howto2__mode{top:clamp(26px,2.4vw,36px)!important;color:var(--c)!important;border-color:color-mix(in srgb,var(--c) 35%,transparent)!important;background:color-mix(in srgb,var(--c) 6%,#fff)!important}
+.sub-body .howto2__s--ems .howto2__mode{color:#B8501C!important}
+.sub-body .howto2__no{color:var(--c)!important}
+.sub-body .howto2__steps p{margin-top:10px!important}
+/* 단계 사이 화살표 */
+@media (min-width:861px){
+  .sub-body .howto2__steps li:not(:last-child)::after{content:"→";position:absolute;top:50%;right:calc(-1 * clamp(12px,1.4vw,22px) / 2 - 15px);z-index:2;
+    width:30px;height:30px;border-radius:50%;display:grid;place-items:center;transform:translateY(-50%);
+    background:#fff;box-shadow:0 4px 14px -4px rgba(0,0,0,.18);font-size:14px;color:var(--accent)}
+}
+/* How to Use 단계 박스 v3 — 모드별 색 빼고 모두 주황 · 화살표 없음 */
+.sub-body .howto2__steps li,.sub-body .howto2__s--glow,.sub-body .howto2__s--ems{--c:#E0662B!important}
+.sub-body .howto2__s--ems .howto2__ic{background:radial-gradient(circle,var(--c) 0 3.2px,transparent 3.8px) 0 0/10px 10px content-box,color-mix(in srgb,var(--c) 9%,#fff)}
+.sub-body .howto2__steps li:not(:last-child)::after{content:none!important;display:none}
+/* 마무리 CTA 일러스트 — 아래 흐림 없이(라벨이 보이게) · 미색 배경은 흰 바탕에 녹임 */
+.sub-body .tcta__vis img:not(#_){-webkit-mask-image:linear-gradient(180deg,#000 86%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(180deg,#000 86%,rgba(0,0,0,0) 100%);mix-blend-mode:multiply}
+/* Aging Lab 머리말 서브 비주얼(배경 사진) 삭제 — Company처럼 제목만 */
+.sub .subhead--aging-lab::before{content:none!important;display:none!important}
+
+/* 6 Aging Types 카드 — 얼굴 위에 작은 리니어 아이콘 + 별명 (6개 노화 유형 Summary 장표의 비유: 전구·너구리·스카프·아이스크림·협곡, 혼합형은 앞 유형이 섞인 네 칸 그림, 이름은 지도형) 2026-11-26 */
+.sub-body .dp-item__nick{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 12px;color:var(--accent)}
+.sub-body .dp-item .dp-item__nick svg{width:60px!important;height:60px!important;display:block;color:var(--ink)}
+.sub-body .dp-item__nick span{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--accent);line-height:1}
+.sub-body .dp-item--flip:hover .dp-item__nick svg,.sub-body .dp-item--flip:focus .dp-item__nick svg{transform:translateY(-2px);transition:transform .3s ease}
+@media (max-width:767px){.sub-body .dp-item .dp-item__nick svg{width:56px!important;height:56px!important}.sub-body .dp-item__nick{margin-bottom:8px}}

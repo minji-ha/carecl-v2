@@ -1,0 +1,327 @@
+/* =========================================================
+   GRID 시안 (2026-11-05) — 고객 수정요청: 쥬베룩 톤
+   · 흰 바탕 + 화면을 5칸으로 나누는 옅은 세로선
+   · 좌우 여백 넓게, 내용 폭 정리
+   · 사진은 한 가지 카드 규격(둥근 모서리 + 옅은 그림자)
+   · 전체 서체 Caviar Dreams (한글은 Pretendard)
+   stem.css · home261019.css 위에 얹는다 (모든 페이지)
+   ========================================================= */
+@font-face{font-family:"S-Core Dream";font-weight:400;font-display:swap;src:url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-4Regular.woff) format("woff")}
+@font-face{font-family:"S-Core Dream";font-weight:800;font-display:swap;src:url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-8Heavy.woff) format("woff")}
+@font-face{font-family:"S-Core Dream";font-weight:600;font-display:swap;src:url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff) format("woff")}
+/* 전체 서체 URW Classico (2026-11-09 요청, 로고는 SVG라 그대로) — 한글은 이 서체에 없어 SUIT로 */
+@font-face{font-family:"URW Classico";src:url(../fonts/urw-classico.woff2) format("woff2");font-weight:400;font-display:swap}
+:root{
+  --ink:#1E1A17;
+  --ink-2:#6B625C;
+  --nav:#1E1A17;
+  --accent:#E0662B;            /* 고객 시안(5 STEPS) 오렌지 */
+  --accent-2:#F6E3D6;
+  --soft:#F6F5F3;
+  --hair:rgba(30,26,23,.12);
+  --line:rgba(30,26,23,.07);   /* 배경 세로선 */
+  --led:var(--accent);
+  /* 영문은 Caviar Dreams (자료/drive/10. 글꼴/CaviarDreams.ttf) — 한글 글자는 없어 아래 한글 서체로 이어진다
+     한글: 제목 에스코어드림 · 본문 SUIT (둘 다 상업적 이용 무료) */
+  --f-title:"URW Classico","S-Core Dream","SUIT",system-ui,sans-serif;
+  --f-ui:"URW Classico","SUIT",system-ui,sans-serif;
+  --f-kr:"URW Classico","SUIT","Pretendard",system-ui,sans-serif;
+  --gut:clamp(20px,6.25vw,120px);   /* 좌우 여백 — STEM 45px → 90px@1440 */
+  --head:88px;
+  --sec:clamp(100px,11vw,200px);
+  --r:clamp(16px,1.6vw,28px);       /* 카드 모서리 */
+  --shadow:0 28px 60px -24px rgba(30,20,10,.16),0 6px 18px -8px rgba(30,20,10,.06);
+}
+body{background:#fff;color:var(--ink);letter-spacing:-.01em;font-family:var(--f-kr)}
+/* Caviar Dreams는 보통 굵기 하나뿐 — 가짜 굵게 처리하지 않는다 (한글 Pretendard는 굵기 그대로) */
+html{font-synthesis-weight:none;font-synthesis:none}
+
+/* ── 배경 세로선 (화면 5칸) ─────────────────────── */
+.glines{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.glines i{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.glines i:nth-child(1){left:20%}
+.glines i:nth-child(2){left:40%}
+.glines i:nth-child(3){left:60%}
+.glines i:nth-child(4){left:80%}
+@media (max-width:767px){
+  .glines i:nth-child(1){left:25%}
+  .glines i:nth-child(2){left:50%}
+  .glines i:nth-child(3){left:75%}
+  .glines i:nth-child(4){display:none}
+}
+
+/* ── 헤더 — 가로 막대: 로고 왼쪽 · 메뉴 가운데 · 쇼핑/로그인 오른쪽
+   내리면 위로 숨고, 올리면 불투명한 흰 막대로 다시 나온다 (js/grid-header.js) ── */
+.header{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+  padding-inline:var(--gut);height:var(--head);
+  background:rgba(255,255,255,.96)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(1.2)!important;backdrop-filter:blur(14px) saturate(1.2)!important;
+  border-bottom:1px solid var(--hair);
+  transition:transform .45s cubic-bezier(.65,0,.35,1),background .35s ease,border-color .35s ease;
+}
+.header.is-hidden{transform:translateY(-100%)}
+body.menu-open .header{transform:none}
+.header__pill{display:contents}
+.header__logo{width:clamp(104px,8vw,132px);color:var(--ink);justify-self:start;transition:color .3s ease}
+.header__nav{gap:clamp(26px,3vw,56px);justify-self:center}
+.header__util{justify-self:end;gap:clamp(16px,1.6vw,28px)}
+.hnav{height:var(--head)}
+.hnav__top,.header__nav a{
+  font-family:var(--f-ui);font-weight:400;text-transform:uppercase;letter-spacing:.08em;
+  font-size:clamp(13px,.95vw,15px);color:var(--nav);
+}
+/* 마우스를 올리면 글자 밑에 오렌지 점 — 케어클 LED 점 */
+.hnav__top::after,.header__util > a::after{
+  content:"";display:block!important;position:absolute;left:50%;right:auto;bottom:-6px;width:5px;height:5px;margin-left:-2.5px;
+  border-radius:50%;background:var(--accent);transform:scale(0)!important;transition:transform .3s cubic-bezier(.16,1,.3,1)!important;
+}
+.hnav:hover .hnav__top::after,.hnav__top[aria-current="page"]::after,.header__util > a:hover::after{transform:scale(1)!important}
+.hnav:hover .hnav__top,.hnav__top[aria-current="page"],.header__util > a:hover{color:var(--accent)}
+.header__lang,.header__nav .header__lang a{font-size:12px}
+.hnav__sub{left:50%;translate:-50% 0;top:100%;min-width:240px}
+.hnav__in{border-radius:0 0 18px 18px;border-top:2px solid var(--accent);box-shadow:var(--shadow);padding:10px}
+.header__nav .hnav__in a{border-radius:10px}
+.hnav__in b{text-transform:none;font-size:15px;letter-spacing:0}
+/* 메인 영상 위(맨 위)에서는 투명 + 흰 글자 */
+body.on-hero .header:not(.is-solid){background:transparent!important;border-color:transparent;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+body.on-hero .header:not(.is-solid) .header__logo,
+body.on-hero .header:not(.is-solid) .hnav__top,
+body.on-hero .header:not(.is-solid) .header__util a,
+body.on-hero .header:not(.is-solid) .header__lang{color:#fff}
+body.on-hero .header:not(.is-solid) .header__menu span{background:#fff}
+.header__menu{grid-column:3;justify-self:end}
+@media (max-width:1080px){
+  :root{--head:66px}
+  .header{grid-template-columns:1fr auto}
+  .header__nav,.header__util{display:none}
+  .header__logo{grid-column:1;justify-self:start}
+  .header__menu{display:block;grid-column:2;grid-row:1}
+}
+.mnav{background:#fff}
+.mnav a{font-family:var(--f-title);text-transform:none}
+
+/* ── 공용 글자 ───────────────────────────────── */
+.label{font-family:var(--f-ui);font-weight:600;font-size:12px;letter-spacing:.28em;color:var(--accent)}
+.label::before{display:none}
+.sec-title{font-family:var(--f-title);font-weight:600;letter-spacing:-.025em}
+.btn-line,.btn-roll{border-radius:999px}
+.btn-line{border:2.5px solid var(--accent);color:var(--accent);font-family:var(--f-ui);font-weight:600;letter-spacing:.02em;text-transform:none}
+.btn-line:hover{background:var(--accent);color:#fff}
+
+/* ── 로딩 — 글자만 ─────────────────────────────── */
+.loader__head{display:none}
+.loader__logo{color:var(--accent)}
+
+/* ── 서브 페이지 ───────────────────────────────── */
+.sub{background:transparent}
+.subhead__title{font-family:var(--f-title);font-weight:600;letter-spacing:-.03em}
+.subtabs{background:transparent}
+.subtabs a{font-family:var(--f-ui);font-weight:500;text-transform:none;border-radius:999px}
+.subtabs a[aria-current="page"]{color:var(--accent)}
+/* 사진은 모두 같은 카드 규격 (누끼 PNG·로고·도면은 제외) */
+.sub-body img:not([src$=".png"]):not([src$=".svg"]):not([src*="/doc/"]):not([src*="/sns/"]){border-radius:var(--r)}
+.sub-body figure,.sub-body .dp-media,.sub-body .media{border-radius:var(--r)}
+
+/* ── 푸터 ─────────────────────────────────────── */
+.foot{background:var(--soft);border-top:0;margin-top:var(--sec)}
+.foot__logo{max-width:420px;color:var(--ink)}
+.foot__side h2,.foot__nav a{font-family:var(--f-ui);text-transform:none;font-weight:500}
+.foot__bar{background:transparent;color:var(--ink-2);border-top:1px solid var(--hair)}
+.aifab{border-radius:999px}
+
+/* 화면 끝까지 닿던 큰 사진도 여백 안쪽 카드로 */
+.dp-full,.dp-tall__img{margin-inline:var(--gut);border-radius:var(--r);box-shadow:var(--shadow)}
+.dp-full img,.dp-tall__img img{border-radius:0!important}
+
+
+
+/* 서브 본문 제목 — 가는 글씨 대신 메인과 같은 굵기 */
+.sub-body h2,.sub-body h3,.sub-body .dp-title,.sub-body .sec-title{font-family:var(--f-title);font-weight:600;letter-spacing:-.03em}
+.sub-body .dp-title{font-size:clamp(32px,4vw,72px);line-height:1.2}
+.sub-body .label{color:var(--accent)}
+
+/* 내린 뒤 다시 나오는 헤더 — 오렌지 막대 + 흰 글자 · 흰 로고 (메인 맨 위 영상 위는 투명 그대로) */
+.header.is-solid{background:var(--accent)!important;border-bottom-color:transparent;box-shadow:0 10px 30px -18px rgba(120,50,15,.45)}
+.header.is-solid .header__logo,
+.header.is-solid .hnav__top,
+.header.is-solid .header__util > a,
+.header.is-solid .header__lang,
+.header.is-solid .header__lang a{color:#fff!important}
+.header.is-solid .header__lang a:not([aria-current="true"]){opacity:.7}
+.header.is-solid .hnav__top::after,.header.is-solid .header__util > a::after{background:#fff}
+.header.is-solid .header__menu span{background:#fff}
+.header.is-solid .hnav__in{border-top-color:var(--ink)}
+
+/* 메뉴 펼침 상자 — 네 모서리 모두 둥글게, 위 선 없이, 메인 메뉴 바로 밑에 붙게 */
+.hnav__sub{top:calc(50% + 22px)}
+.hnav__sub::before{top:-24px;height:24px}
+.hnav__in,.header.is-solid .hnav__in{border-radius:18px;border-top:0}
+.hnav__in b{color:#111;font-weight:700;font-synthesis-weight:auto;font-synthesis:weight}   /* 영문 제목만 굵고 검게 */
+/* 메인 메뉴 밑 표시(점·줄) 없애기 */
+.hnav__top::after,.header__util > a::after,.header__nav a::after{display:none!important}
+
+/* 제목·메뉴·라벨을 대문자로 바꾸지 않고 원고 그대로 (About careCL, Aging Lab …) */
+*,*::before,*::after{text-transform:none!important}
+/* Caviar Dreams는 굵은 글꼴이 없어 획을 살짝 덧그려 굵게 */
+.hnav__in b{-webkit-text-stroke:.45px currentColor}
+
+/* 서브 머리말 여백 줄이기 (의견: 제목 부분 여백이 너무 넓다) */
+.subhead{padding-top:clamp(36px,4vw,72px)}
+.subhead__title{font-size:clamp(40px,5.4vw,100px)}
+.subhead__vis{top:calc(-1 * clamp(36px,4vw,72px))}
+.subtabs{margin-top:clamp(28px,2.8vw,50px)}
+.sub-body > .dp:first-child,.sub-body > section:first-child{padding-top:clamp(56px,6vw,110px)}
+
+/* 제목 — 한글은 에스코어드림 600, 영문(Caviar Dreams)만 획을 덧그려 두껍게.
+   영문 글자 묶음은 js/grid-header.js가 <span class="en">으로 감싼다 */
+.subhead__title,.ghead__big,.ghead__title,.gwhy__title,.gtile__name,.gstep__head,.gstep__kr,
+.sec-title,.sub-body h2,.sub-body h3,.sub-body .dp-title,.gshop__copy h2,.foot__side h2,.hnav__in b{
+  font-family:"URW Classico","S-Core Dream","SUIT",system-ui,sans-serif;font-weight:600;
+}
+.en{-webkit-text-stroke:.035em currentColor;paint-order:stroke fill}
+.hnav__in b .en,.gstep__head .en,.gtile__name .en{-webkit-text-stroke:.7px currentColor}
+
+
+/* 다시 나오는 헤더 — 반투명 오렌지 + 뒤 블러 (쥬베룩처럼 뒤가 비친다) */
+.header.is-solid{
+  background:rgba(224,102,43,.72)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.4)!important;backdrop-filter:blur(20px) saturate(1.4)!important;
+}
+
+/* 본문 한글 SUIT 500, 메뉴명(영문)만 두껍게 */
+body{font-weight:500}
+.hnav__top,.header__util > a,.header__lang a,.subtabs a,.mnav a.mnav__top{-webkit-text-stroke:.9px currentColor}
+.hnav__in small,.mnav small{font-weight:500;-webkit-text-stroke:0}
+
+/* 최종 굵기 정리 — 한글은 모두 400, 작은 글자는 영문도 400 그대로, 아주 큰 영문 제목만 획을 덧그려 두껍게 */
+body,
+.subhead__title,.ghead__big,.ghead__title,.gwhy__title,.gtile__name,.gstep__head,.gstep__kr,
+.sec-title,.sub-body h2,.sub-body h3,.sub-body .dp-title,.gshop__copy h2,.foot__side h2,
+.hnav__top,.header__util > a,.header__lang a,.subtabs a,.mnav a,.hnav__in b,.hnav__in small{font-weight:400!important;font-synthesis:none}
+.hnav__top,.header__util > a,.header__lang a,.subtabs a,.mnav a,.hnav__in b,.hnav__in small,.en{-webkit-text-stroke:0!important}
+.subhead__title .en,.ghead__big .en,.ghead__title .en,.gwhy__title .en,.sec-title .en,.dp-title .en,.gshop__copy h2 .en,.sub-body h2 .en{
+  -webkit-text-stroke:.03em currentColor!important;paint-order:stroke fill
+}
+
+/* 굵기 최종 — 상세페이지 머리말 제목만 두껍게, 나머지는 모두 일반 두께 */
+.en,.ghead__big .en,.ghead__title .en,.gwhy__title .en,.sec-title .en,.dp-title .en,.gshop__copy h2 .en,.sub-body h2 .en{-webkit-text-stroke:0!important}
+.subhead__title .en{-webkit-text-stroke:.03em currentColor!important;paint-order:stroke fill}
+
+/* 다시 나오는 헤더 — 흰 반투명 + 뒤 블러, 글자·로고는 검정 */
+.header.is-solid{background:rgba(255,255,255,.62)!important;border-bottom:1px solid rgba(30,26,23,.06);box-shadow:0 8px 30px -18px rgba(30,20,10,.25)}
+.header.is-solid .header__logo,
+.header.is-solid .hnav__top,
+.header.is-solid .header__util > a,
+.header.is-solid .header__lang,
+.header.is-solid .header__lang a{color:var(--ink)!important}
+.header.is-solid .hnav:hover .hnav__top,.header.is-solid .hnav__top[aria-current="page"],.header.is-solid .header__util > a:hover{color:var(--accent)!important}
+.header.is-solid .header__menu span{background:var(--ink)}
+
+/* 한글 서체 → 나눔스퀘어라운드 (네이버, 상업적 이용 무료)
+   로고 서체 Caviar Dreams처럼 획 끝이 둥글고 반듯한 기하형이라 섞여도 한 서체처럼 보인다 */
+:root{
+  --f-title:"URW Classico","NanumSquareRound",system-ui,sans-serif;
+  --f-ui:"URW Classico","NanumSquareRound",system-ui,sans-serif;
+  --f-kr:"URW Classico","NanumSquareRound","Pretendard",system-ui,sans-serif;
+}
+body,
+.subhead__title,.ghead__big,.ghead__title,.gwhy__title,.gtile__name,.gstep__head,.gstep__kr,
+.sec-title,.sub-body h2,.sub-body h3,.sub-body .dp-title,.gshop__copy h2,.foot__side h2,.hnav__in b{
+  font-family:"URW Classico","NanumSquareRound",system-ui,sans-serif
+}
+
+/* 서브 머리말 여백 다시 맞추기 — 헤더와 라벨 사이는 넉넉히, 제목 아래 탭까지는 짧게 */
+.subhead{padding-top:clamp(64px,6.5vw,120px)}
+.subhead--vis .subhead__top .wrap{min-height:0}
+.subhead__top .wrap{padding-bottom:clamp(44px,4.4vw,80px)}
+.subhead__title{font-size:clamp(36px,4.4vw,80px);line-height:1.05;margin-top:.35em}
+.subhead__kr{margin-top:clamp(14px,1.2vw,20px)}
+.subhead__vis{top:calc(-1 * clamp(64px,6.5vw,120px))}
+.subtabs{margin-top:0}
+/* 남아 있던 보라·초록 LED 색 표시(탭 밑줄·라벨 점)도 오렌지로 */
+html[data-led-now]{--led:var(--accent)!important}
+.subtabs a::after{background:var(--accent)!important}
+
+/* 한글 서체 → IBM Plex Sans KR Light (SIL OFL — 상업적 이용 무료). & 기호도 이 서체로 나온다 (Caviar Dreams에서 & 제외) */
+:root{
+  --f-title:"URW Classico","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-ui:"URW Classico","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-kr:"URW Classico","IBM Plex Sans KR","Pretendard",system-ui,sans-serif;
+}
+body,
+.subhead__title,.ghead__big,.ghead__title,.gwhy__title,.gtile__name,.gstep__head,.gstep__kr,
+.sec-title,.sub-body h2,.sub-body h3,.sub-body .dp-title,.gshop__copy h2,.foot__side h2,.hnav__in b{
+  font-family:"URW Classico","IBM Plex Sans KR",system-ui,sans-serif
+}
+body,body *{font-weight:400!important}
+
+/* 메뉴 펼침 — 영문 크게, 한글 작게 */
+.hnav__in b{font-size:17px!important;line-height:1.3}
+.hnav__in small{font-size:11px!important;margin-top:3px;color:var(--ink-2)}
+
+/* 한글 서체 → SUIT Light (SIL OFL — 상업적 이용 무료). 숫자 · &도 SUIT */
+:root{
+  --f-title:"URW Classico","SUIT",system-ui,sans-serif;
+  --f-ui:"URW Classico","SUIT",system-ui,sans-serif;
+  --f-kr:"URW Classico","SUIT","Pretendard",system-ui,sans-serif;
+}
+body,
+.subhead__title,.ghead__big,.ghead__title,.gwhy__title,.gtile__name,.gstep__head,.gstep__kr,
+.sec-title,.sub-body h2,.sub-body h3,.sub-body .dp-title,.gshop__copy h2,.foot__side h2,.hnav__in b{
+  font-family:"URW Classico","SUIT",system-ui,sans-serif
+}
+
+/* 좌우 여백 하나로 — 헤더 로고 선 = 메인 · 상세 본문 선 (90px@1440 → 60px@1440) */
+:root{--gut:clamp(20px,4.2vw,80px)}
+
+/* 영문과 붙어 나오는 숫자만 로고 서체 숫자로 (5 STEPS · 01 Notice …) — 한글 옆 숫자는 SUIT 그대로.
+   어느 숫자가 영문 옆인지는 js/grid-header.js가 골라 <span class="num-en">으로 감싼다 */
+@font-face{font-family:"Caviar Num";src:url(../fonts/caviar-dreams.woff2) format("woff2");font-weight:400;font-display:block;unicode-range:U+0030-0039}
+.num-en{font-family:"URW Classico","SUIT",system-ui,sans-serif}
+/* Caviar Dreams 숫자는 대문자보다 약 6% 낮아(74 : 79) 영문 옆에서 작고 가늘어 보인다 → 대문자 높이에 맞춘다 */
+.num-en{font-size:1em}
+
+/* 상세페이지 헤더 — 메인과 같은 흰 반투명 블러 (맨 위에서도) */
+body:has(main.sub) .header{background:rgba(255,255,255,.62)!important;border-bottom:1px solid rgba(30,26,23,.06);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4)!important;backdrop-filter:blur(20px) saturate(1.4)!important}
+
+/* 작은 영문이 너무 가늘어 — 영문 글자 묶음(js가 span.lat로 감쌈)만 획을 아주 살짝 덧그린다.
+   큰 글씨는 최대 .45px로 묶어 거의 그대로, 상세페이지 큰 제목은 원래 굵기 유지 */
+.lat,.num-en{-webkit-text-stroke:min(.03em,.45px) currentColor;paint-order:stroke fill}
+.subhead__title .lat,.subhead__title .num-en{-webkit-text-stroke:inherit}
+
+/* 헤더 메뉴 — 다시 얇게(획 덧그리기 없음), 크기만 조금 키움 */
+.header .lat,.header .num-en{-webkit-text-stroke:0!important}
+.hnav__top,.header__util > a{font-size:clamp(15px,1.12vw,17px)!important}
+.header__lang,.header__nav .header__lang a{font-size:13px!important}
+/* 영문·숫자 보정용으로 감싼 글자는 언제나 글줄 안에 (기존 "… span{display:block}" 규칙에 걸려 단어마다 줄바꿈되던 문제) */
+.lat,.num-en,.en{display:inline!important;margin:0!important;padding:0!important;width:auto!important}
+
+/* 헤더 메뉴 글자 세로 가운데 — Caviar Dreams는 소문자 위주라 글자 상자 가운데보다 약 2px 아래로 보인다 → 2px 올림 */
+.hnav__top,.header__util > a,.header__lang{position:relative;top:-2px}
+
+/* 좌우 여백 조금 더 (60px → 80px @1440) — 헤더 로고 · KR/EN, 메인 · 상세 본문 모두 같은 선 */
+:root{--gut:clamp(22px,5.6vw,108px)}
+
+/* 회색 글씨 더 진하게 (보조 글자색 #6B625C → #4A423C) */
+:root{--ink-2:#4A423C}
+.gcontact__links a,.gstep__desc,.ghead__kr,.gwhy__q,.gtile__no,.gcc__desc,.foot__bar,.hnav__in small,.tres__note,.dp-pics figcaption{color:#4A423C}
+/* 메인 섹션 간격도 한 단계 줄임 */
+:root{--sec:clamp(76px,7.6vw,140px)}
+
+/* WOW.js + animate.css — 위에서 아래로 살짝(40px) 내려앉게, 너무 크게 떨어지지 않도록 거리 조정 */
+@keyframes fadeInDown{from{opacity:0;transform:translate3d(0,-40px,0)}to{opacity:1;transform:none}}
+.wow.animated{animation-duration:.9s;animation-timing-function:cubic-bezier(.16,1,.3,1)}
+.wow{visibility:hidden}
+
+/* & 기호 — 로고 서체(가는 획) 옆에서 두껍게 튀지 않도록 얇은 SUIT &, 획 덧그리기 없음 */
+.amp{display:inline!important;font-family:"URW Classico","SUIT",sans-serif!important;font-weight:400!important;-webkit-text-stroke:0!important;font-size:.92em}
+/* AI 피부 진단 플로팅 버튼 — 링크 없는 <button>이라 기본 버튼 모양만 지움 */
+button.aifab{border:0;font:inherit;cursor:default;-webkit-appearance:none;appearance:none}
+
+/* careCL 글자는 어디서든 로고 서체 (build.py logo_font가 본문 텍스트를 .lf로 감쌈) */
+@font-face{font-family:"careCL Logo";src:url(../fonts/caviar-dreams.woff2) format("woff2");font-weight:400;font-display:block}
+.lf{font-family:"careCL Logo",var(--f-ui),sans-serif;font-weight:400;letter-spacing:0}
+b .lf,strong .lf{font-weight:400}
+.lf em,.lf i{font-family:inherit!important}
