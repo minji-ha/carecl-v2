@@ -664,31 +664,39 @@ def page_index2():
     <div class="gwrap"><div class="gline__bar" aria-hidden="true"><i data-line-bar></i></div></div>
   </section>
 
-  <!-- 07 특허 기술 + 수출 국가 (한 섹션) -->
+  <!-- 07 특허 기술 + 수출 국가 — 위쪽 색 띠에 제목, 그 아래 [사진|글] · [글|사진] 두 줄 (2026-11-26 레퍼런스) -->
   <section class="v2trust" aria-labelledby="v2trust-title">
-    <div class="gwrap">
-      <div class="ghead">
-        <p class="glabel">Patent &amp; Global</p>
-        <h2 class="ghead__title" id="v2trust-title">직접 연구한 기술로, <span class="gacc">해외 시장</span>에 갑니다</h2>
+    <div class="v2trust__band">
+      <div class="gwrap">
+        <p class="glabel glabel--light">Patent &amp; Global</p>
+        <h2 class="v2trust__title" id="v2trust-title">직접 연구한 기술로, <b>해외 시장</b>에 갑니다</h2>
       </div>
-      <div class="v2trust__grid">
-        <article class="v2trust__card" data-v2-in>
-          <p class="v2trust__k">Patent</p>
-          <p class="v2trust__big"><b>4</b>건<span>등록특허</span></p>
+    </div>
+    <div class="gwrap v2trust__rows">
+      <article class="v2row" data-v2-in>
+        <figure class="v2row__img"><img src="assets/img/e-techfit-lit-43.jpg?v={VER}" alt="빛이 켜진 TECH FIT 9구 헤드" loading="lazy"></figure>
+        <div class="v2row__txt">
+          <p class="v2row__k">Patent</p>
+          <h3 class="v2row__t">등록특허 <b>4</b>건</h3>
+          <p class="v2row__lead">피부에 닿는 방식부터 에너지를 전달하는 방식까지, 홈케어 기기의 핵심 기술을 직접 연구합니다.</p>
           <ul class="v2pat">
 {patents}
           </ul>
-          <a class="gpill gpill--sm" href="rnd.html">연구개발 · 특허 보기</a>
-        </article>
-        <article class="v2trust__card" data-v2-in style="--i:1">
-          <p class="v2trust__k">Export</p>
-          <p class="v2trust__big"><b>5</b>개국<span>수출 · 독점 계약</span></p>
+          <a class="v2row__more" href="rnd.html">연구개발 · 특허 보기<i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+      <article class="v2row v2row--rev" data-v2-in>
+        <figure class="v2row__img"><img src="assets/img/h-package.jpg?v={VER}" alt="careCL TECH FIT 패키지와 그리드 마스크, 콜라겐 젤" loading="lazy"></figure>
+        <div class="v2row__txt">
+          <p class="v2row__k">Global</p>
+          <h3 class="v2row__t">수출 · 독점 계약 <b>5</b>개국</h3>
+          <p class="v2row__lead">홍콩 · 호주 · 캐나다에 수출하고, 두바이 · 이집트와 독점 계약을 맺었습니다.</p>
           <ul class="v2ex">
 {exports}
           </ul>
-          <a class="gpill gpill--sm" href="contact.html#global">해외 사업 문의</a>
-        </article>
-      </div>
+          <a class="v2row__more" href="contact.html#global">해외 사업 문의<i aria-hidden="true">→</i></a>
+        </div>
+      </article>
     </div>
   </section>
 
