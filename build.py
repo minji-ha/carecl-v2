@@ -544,8 +544,11 @@ def page_index2():
             <b class="gtile__name">{name}</b>
           </a>""" for i, (tag, name, desc, cut, h) in enumerate(GLINEUP))
     patents = "\n".join(f"""            <li><em>{k}</em><b>{no}</b>{f"<p>{t}</p>" if t else ""}</li>""" for k, no, t in V2_PATENTS)
-    exports = "\n".join(f"""            <li class="v2ex__c{' is-deal' if st != '수출' else ''}"><img class="v2ex__flag" src="assets/img/flags/{code.lower()}.svg" alt="{kr} 국기" width="40" height="30"><b>{kr}</b><em>{en}</em><small>{st}</small></li>"""
-                        for code, kr, en, st in V2_EXPORT)
+    def _gl(st, label, en):
+        cs = [(c, kr, e) for c, kr, e, t in V2_EXPORT if t == st]
+        li = "".join(f'<li><img src="assets/img/flags/{c.lower()}.svg" alt="" width="56" height="42"><b>{kr}</b><em>{e}</em></li>' for c, kr, e in cs)
+        return f'<div class="v2gl__grp{" v2gl__grp--deal" if st != "수출" else ""}"><p class="v2gl__h"><span>{label}</span><b>{len(cs)}</b><em>{en}</em></p><ul class="v2gl__list" style="--n:{len(cs)}">{li}</ul></div>'
+    exports = _gl("수출", "수출", "Export") + _gl("독점 계약", "독점 계약", "Exclusive")
 
     body = f"""<main class="ghome ghome--v2">
 
@@ -695,10 +698,7 @@ def page_index2():
         <div class="v2row__txt">
           <p class="v2row__k">Global</p>
           <h3 class="v2row__t">수출 · 독점 계약 <b>5</b>개국</h3>
-          <p class="v2row__lead">홍콩 · 호주 · 캐나다에 수출하고, 두바이 · 이집트와 독점 계약을 맺었습니다.</p>
-          <ul class="v2ex">
-{exports}
-          </ul>
+          <div class="v2gl">{exports}</div>
           <a class="v2row__more" href="contact.html#global">해외 사업 문의<i aria-hidden="true">→</i></a>
         </div>
       </article>

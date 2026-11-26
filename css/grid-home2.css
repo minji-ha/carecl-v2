@@ -380,3 +380,18 @@
 .v2row .v2ex__c b{align-self:end;line-height:1.2}
 .v2row .v2ex__c small{align-self:start;justify-self:start;display:inline-block;padding:3px 8px;border-radius:999px;background:#F0EEEC;color:var(--ink-2);font-size:11px;line-height:1.3}
 @media (max-width:767px){.v2row .v2ex{gap:14px 12px}.v2row .v2ex__c{grid-template-columns:42px 1fr;gap:4px 10px}}
+/* 수출 · 독점 계약 — 두 묶음 타일 (국기 크게) */
+.v2gl{display:grid;grid-template-columns:3fr 2fr;gap:12px;width:100%;margin:clamp(20px,2vw,28px) 0 clamp(24px,2.4vw,32px)}
+.v2gl__grp{border-radius:16px;background:#F7F5F3;padding:16px 16px 18px}
+.v2gl__grp--deal{background:#FDF1E9}
+.v2gl__h{display:flex;align-items:baseline;gap:6px;margin:0 0 14px;font-size:13px;font-weight:600;color:var(--ink)}
+.v2gl__h b{font-family:var(--f-title);font-weight:500;font-size:20px;line-height:1;color:var(--accent)}
+.v2gl__h b::after{content:"개국";margin-left:1px;font-family:var(--f-kr);font-size:12px;font-weight:500;color:var(--ink-2)}
+.v2gl__h em{margin-left:auto;font-style:normal;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);opacity:.7}
+.v2gl__list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px}
+.v2gl__list li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}
+.v2gl__list img{display:block;width:56px;height:42px;object-fit:cover;border-radius:6px;margin-bottom:8px;box-shadow:0 0 0 1px rgba(30,26,23,.08),0 6px 14px -8px rgba(30,20,10,.35)}
+.v2gl__list b{font-size:14px;font-weight:600;color:var(--ink)}
+.v2gl__list em{font-style:normal;font-size:11px;color:var(--ink-2)}
+@media (max-width:1080px){.v2gl{grid-template-columns:1fr}}
+@media (max-width:767px){.v2gl__list img{width:48px;height:36px}}
