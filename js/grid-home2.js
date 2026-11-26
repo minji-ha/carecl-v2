@@ -31,3 +31,21 @@
   dots.forEach(function (d) { d.classList.remove('is-on'); });
   io.observe(img);
 })();
+
+/* 5초 스탬핑 영상 — 소리 켜기/끄기, 화면 밖에서는 멈춤 */
+(function () {
+  var v = document.querySelector('.v2stamp__video');
+  if (!v) return;
+  var b = document.querySelector('.v2stamp__snd');
+  if (b) b.addEventListener('click', function () {
+    v.muted = !v.muted;
+    if (!v.muted) { v.play(); }
+    b.setAttribute('aria-pressed', v.muted ? 'false' : 'true');
+    b.setAttribute('aria-label', v.muted ? '소리 켜기' : '소리 끄기');
+  });
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { if (v.autoplay) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } } else { v.pause(); } });
+  }, { threshold: .25 }).observe(v);
+})();

@@ -607,9 +607,9 @@ def page_index2():
     </div>
   </section>
 
-  <!-- 04 5초 스탬핑 — 컬러 블록 안에 짧은 영상 자리 (16:9)
-       영상 받으면 assets/video/stamping.mp4로 넣고 <source> 주석을 풀면 된다 -->
+  <!-- 04 5초 스탬핑 — 영상: 케어클 유튜브 eFbtW7kB00E → assets/video/stamping.mp4 (H.264 1280) -->
   <section class="v2stamp" aria-labelledby="v2stamp-title">
+    <div class="gwrap">
     <div class="v2stamp__block" data-v2-in>
       <div class="v2stamp__cap">
         <p class="v2stamp__k"><i></i>Core Technology</p>
@@ -622,14 +622,12 @@ def page_index2():
         </ol>
       </div>
       <figure class="v2stamp__media">
-        <video class="v2stamp__video" poster="assets/img/t-techfit-use.jpg?v={VER}" muted loop playsinline autoplay preload="none" aria-label="TECH FIT 5초 스탬핑샷 영상">
-          <!-- <source src="assets/video/stamping.mp4?v={VER}" type="video/mp4"> -->
+        <video class="v2stamp__video" poster="assets/img/v2-stamping-poster.jpg?v={VER}" muted loop playsinline autoplay preload="metadata" aria-label="케어클 스탬핑 메커니즘 설명 영상">
+          <source src="assets/video/stamping.mp4?v={VER}" type="video/mp4">
         </video>
-        <figcaption class="v2stamp__hud" aria-hidden="true">
-          <span class="v2stamp__ring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19"/><circle class="v2stamp__arc" cx="22" cy="22" r="19"/></svg><b>5s</b></span>
-          <span class="v2stamp__tag"><em>TECH FIT</em>Stamping Shot</span>
-        </figcaption>
+        <button class="v2stamp__snd" type="button" aria-pressed="false" aria-label="소리 켜기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M16 9l6 6M22 9l-6 6"/></svg><span>소리</span></button>
       </figure>
+    </div>
     </div>
   </section>
 
