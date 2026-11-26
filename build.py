@@ -436,7 +436,7 @@ V2_ZONES = [
 
 
 # PC에서 Upper/Mid/Lower 글자 줄의 높이 — 사진 속 얼굴 높이(눈 아래 · 입 위 · 턱 끝, t-face-clean.jpg 기준 %)
-V2_ZONE_Y = {"upper": 45.5, "mid": 56, "lower": 68.5}
+V2_ZONE_Y = {"upper": 42.8, "mid": 55.2, "lower": 68.6}   # 사용자 기준 이미지(1672×941) 선 높이 403 · 519 · 646px
 
 
 def v2_report_sample():

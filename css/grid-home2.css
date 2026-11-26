@@ -70,16 +70,17 @@
 
 /* PC: 이전 시안처럼 글자를 얼굴 높이(상안부 · 중안부 · 하안부) 줄 위에 — 오른쪽 끝을 세로선으로 잇는다 */
 @media (min-width:1081px){
-  .v2zm__tabs{left:0;top:0;bottom:0;width:37.5%;transform:none;display:block;pointer-events:none}
-  .v2zm__tabs::after{content:"";position:absolute;right:0;top:45.5%;height:23%;width:1px;background:rgba(255,255,255,.6)}
-  .v2zm__tab{position:absolute;left:clamp(20px,5vw,96px);right:0;top:var(--y);transform:translateY(-100%);min-width:0;padding:0 0 12px;pointer-events:auto;
+  .v2zm__tabs{left:0;top:0;bottom:0;width:35.2%;transform:none;display:block;pointer-events:none}
+  .v2zm__tabs::after{content:"";position:absolute;right:0;top:21%;height:51%;width:1px;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.75) 12%,rgba(255,255,255,.75) 88%,rgba(255,255,255,0))}
+  .v2zm__tab{position:absolute;left:45%;right:0;top:var(--y);transform:translateY(-100%);min-width:0;padding:0 0 10px 11.4%;pointer-events:auto;border-bottom:0!important;
+    background:linear-gradient(to right,rgba(255,255,255,0),rgba(255,255,255,.8) 18%) left bottom/100% 1px no-repeat;
     border-bottom:1px solid rgba(255,255,255,.6);grid-template-columns:auto 1fr;column-gap:14px;align-items:end}
   .v2zm__tab > b{grid-row:1 / span 2}
   .v2zm__tab > span{grid-column:2;grid-row:1}
   .v2zm__tab > i{grid-column:2;grid-row:2;justify-self:start;align-self:end}
   .v2zm__tab.is-on::before{display:none}
   .v2zm__tab::after{content:"";position:absolute;right:-5px;bottom:-5px;width:9px;height:9px;border-radius:50%;background:#fff;transition:background .3s ease,transform .3s ease}
-  .v2zm__tab.is-on{border-bottom-color:#fff}
+  .v2zm__tab.is-on{background-image:linear-gradient(to right,rgba(255,255,255,0),#fff 18%)}
   .v2zm__tab.is-on::after{background:var(--accent);transform:scale(1.4);box-shadow:0 0 0 3px rgba(255,255,255,.9)}
 }
 
