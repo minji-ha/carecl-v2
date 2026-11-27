@@ -371,7 +371,7 @@
       /* 홈케어 루틴 + 추천 성분 + 생활습관 */
       '<section class="cku-card" data-sec="care">' + title('homecare', '홈케어 루틴 · 추천 성분 · 생활습관') +
         '<div class="rx-care">' +
-          '<figure class="rx-care__img"><img src="' + RIMG + 'common/care.jpg" alt="거울 앞에서 피부를 살피는 여성" loading="lazy"></figure>' +
+          '<figure class="rx-care__img"><img src="' + RIMG + 'common/care.jpg" alt="거울 앞에서 홈케어하는 여성과 TECH FIT 제품 세트" loading="lazy"></figure>' +
           (D.homecare && D.homecare.length ? '<ol class="rx-num">' + D.homecare.map(function (t, i) {
             return '<li><span class="rx-num__no">' + (i + 1) + '</span><p>' + esc(t) + '</p></li>'; }).join('') + '</ol>' : '') +
         '</div>' +

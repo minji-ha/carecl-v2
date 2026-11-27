@@ -63,7 +63,7 @@ DB의 SHOT 모드 이름 → 키: `EYE SHOT`→`eye`, `FACE SHOT`→`face`, `BOD
 
 | 자리 | 파일 |
 |---|---|
-| 02 홈케어 루틴 · 추천 성분 · 생활습관 | `common/care.jpg` (거울 앞 여성, 제품 세트는 잘라 냄) |
+| 02 홈케어 루틴 · 추천 성분 · 생활습관 | `common/care.jpg` (홈케어.png — 거울 앞에서 관리하는 여성과 제품 세트) |
 | 03 고주파(RF) 기술과 케어클 | `common/rf-stamp.jpg` |
 | 06 혜택 — TECH FIT | `common/coupon-techfit.jpg` |
 | 06 혜택 — 소모품 | `common/coupon-consumables.jpg` (제품컷 케어클20804) |

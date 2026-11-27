@@ -72,7 +72,7 @@ for k, body in life.items():
 
 # ── 6. 고정 사진 (유형과 관계없이 같은 자리) ──
 d = mk("common")
-for src, dst in (("rx-mirror.jpg", "care.jpg"), ("g-why-stamp.jpg", "rf-stamp.jpg"),
+for src, dst in (("rx-homecare.jpg", "care.jpg"), ("g-why-stamp.jpg", "rf-stamp.jpg"),
                  ("c-techfit-case.jpg", "coupon-techfit.jpg"), ("rx-mask-set.jpg", "coupon-consumables.jpg")):
     shutil.copyfile(os.path.join(IMG, src), os.path.join(d, dst))
 

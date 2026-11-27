@@ -250,3 +250,4 @@
 .checkup img.rx-order__ico{width:36px;height:36px;object-fit:contain;border-radius:0}
 .checkup .rx-life__ico img{display:block;width:20px;height:20px}
 @media (max-width:640px){.checkup .rx-type figure img{width:34px;height:34px}}
+.checkup .rx-care__img img{object-position:50% 50%}
