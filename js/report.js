@@ -386,21 +386,19 @@
       '<section class="cku-card" data-sec="tech">' + title('shot', '케어클 TECH FIT 맞춤 사용법') +
         (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="assets/img/g-why-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
           '<div class="rx-rf__txt"><p class="rx-kicker">고주파(RF) 기술과 케어클</p>' + paras(D.rf) + '</div></div>' : '') +
-        (shots.length ? '<div class="rx-demo" data-demo>' +
-          '<div class="rx-demo__stage" data-stage><img class="rx-demo__face" src="assets/img/rx-ill-front.png" alt="얼굴 그림 위에서 TECH FIT을 옮겨 가며 누르는 순서" loading="lazy">' +
-            '<div class="rx-demo__marks" data-marks aria-hidden="true"></div>' +
-            '<div class="rx-demo__dev" data-dev aria-hidden="true"><i class="rx-demo__led"></i><img src="assets/img/cut-device-clean.png" alt=""></div>' +
-            '<p class="rx-demo__hud" data-hud aria-live="polite"></p></div>' +
-          '<div class="rx-demo__side">' +
+        (shots.length ? '<div class="rx-guide" data-guide>' +
+          '<figure class="rx-guide__fig"><img data-guide-img src="assets/img/rx-guide-' + modeKey(shots[0].mode) + '.jpg" alt="' + esc(shots[0].mode) + ' 사용 방법 그림" loading="lazy">' +
+            '<figcaption data-guide-cap><i class="rx-led rx-led--' + modeKey(shots[0].mode) + '"></i>' + esc(shots[0].mode) + ' 사용 방법</figcaption></figure>' +
+          '<div class="rx-guide__body">' +
             (D.usage && D.usage.length ? '<div class="rx-demo__usage">' + paras(D.usage) + '</div>' : '') +
-            '<p class="rx-kicker">부위별 SHOT 가이드 <small>누르면 그 부위를 보여 드려요</small></p>' +
+            '<div><p class="rx-kicker">부위별 SHOT 가이드 <small>누르면 그 모드의 사용 그림으로 바뀌어요</small></p>' +
             '<ol class="rx-shots">' + shots.map(function (s, i) {
-              return '<li><button type="button" class="rx-shot" data-shot="' + i + '" data-code="' + esc(s.code) + '" data-mode="' + esc(modeKey(s.mode)) + '">' +
+              return '<li><button type="button" class="rx-shot' + (i ? '' : ' is-on') + '" data-shot="' + i + '" data-mode="' + esc(modeKey(s.mode)) + '" data-mode-name="' + esc(s.mode) + '">' +
                 '<span class="rx-shot__no">' + (i + 1) + '</span><span class="rx-shot__body"><b>' + esc(s.name) + ' <code class="rx-code">' + esc(s.code) + '</code></b>' +
                 '<em><i class="rx-led rx-led--' + modeKey(s.mode) + '"></i>' + esc(s.mode) + ' · ' + esc(s.dir) + '</em></span><span class="rx-shot__cnt">' + s.count + '<small>샷</small></span></button></li>';
             }).join('') + '</ol>' +
             (D.shotTotal ? '<p class="rx-total"><b>총 ' + D.shotTotal + '샷</b><span>SHOT 모드는 7분 후 자동 종료돼요. 남은 부위가 있으면 다시 켜서 이어 하세요.</span></p>' : '') +
-          '</div></div>' : '') +
+          '</div></div></div>' : '') +
         (D.order && D.order.length ? '<p class="rx-kicker">관리 순서</p><ol class="rx-order" style="--n:' + D.order.length + '">' + D.order.map(function (t, i) {
           return '<li class="has-img"><span class="rx-order__img">' + orderMedia(t) + '</span><span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
         (D.frequency ? '<p class="rx-freq"><b>권장 빈도</b>' + esc(D.frequency) + '</p>' : '') +
@@ -411,7 +409,7 @@
         D.modes.map(function (m) {
           var badge = m.required === true ? '필수' : m.required === false ? '선택' : '';
           var mk = /EMS/.test(m.name) ? 'ems' : 'glow';
-          return '<div class="rx-mode"><figure class="rx-mode__img' + (mk === 'ems' ? ' is-ill' : '') + '"><img src="assets/img/' + (mk === 'ems' ? 'rx-ill-ems.png' : 'm-mode-' + mk + '.jpg') + '" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
+          return '<div class="rx-mode"><figure class="rx-mode__img' + (mk === 'ems' ? ' is-ill' : '') + '"><img src="assets/img/' + (mk === 'ems' ? 'rx-ill-ems.png' : 'rx-guide-glow.jpg') + '" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
             (badge ? '<span class="rx-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="rx-mode__dur">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
             (m.desc ? '<p class="rx-mode__desc">' + esc(m.desc) + '</p>' : '') + '</div></div>';
         }).join('') + '</div></section>' : '') +
@@ -482,7 +480,6 @@
         if (more && full > h + 1) more.hidden = false;
       });
     }, 120);
-    initDemo(root);
   }
 
   /* 성분 칩 펼치기 · 후기 더보기 · 링크 복사 (한 번에 하나만 펼친다) */
@@ -498,6 +495,14 @@
         detail.innerHTML = '<p class="cku-chip-detail-name">' + esc(n) + '</p><p class="cku-chip-detail-desc">' + esc(INGREDIENT_INFO[n]) + '</p>';
       }
       detail.hidden = !open;
+      return;
+    }
+    var gs = e.target.closest('[data-guide] [data-shot]');
+    if (gs) {
+      var g = gs.closest('[data-guide]'), mk = gs.dataset.mode, nm = gs.dataset.modeName;
+      Array.prototype.forEach.call(g.querySelectorAll('[data-shot]'), function (x) { x.classList.toggle('is-on', x === gs); });
+      var img = g.querySelector('[data-guide-img]'); img.src = 'assets/img/rx-guide-' + mk + '.jpg'; img.alt = nm + ' 사용 방법 그림';
+      g.querySelector('[data-guide-cap]').innerHTML = '<i class="rx-led rx-led--' + mk + '"></i>' + esc(nm) + ' 사용 방법';
       return;
     }
     var more = e.target.closest('.cku-review-more');
