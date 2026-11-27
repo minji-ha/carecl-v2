@@ -184,6 +184,106 @@
   }
   function wrap(inner) { return '<div class="checkup" data-rpt><div class="cku-result">' + inner + '</div></div>'; }
 
+
+  /* ── 2026-11-27 리포트 개편: 6가지 유형 띠 · 부위 확대 · 기기 움직임 ── */
+  var TYPE_STRIP = [['early', '초기노화형', '전구형'], ['tired', '피로형', '너구리형'], ['fine', '잔주름형', '스카프형'],
+    ['sag', '변형·처짐형', '아이스크림형'], ['muscle', '근육형', '협곡형'], ['mixed', '혼합형', '지도형']];
+  function typesStrip(k) {
+    return '<section class="rx-types" aria-label="careCL 6가지 노화 유형"><p class="rx-types__h"><b>careCL 6 Aging Types</b><span>6가지 노화 유형 가운데 고객님의 유형은 <em>' + esc(REPORT[k].name) + '</em>입니다</span></p><ol class="rx-types__list">' +
+      TYPE_STRIP.map(function (t, i) {
+        var me = t[0] === k;
+        return '<li class="rx-type' + (me ? ' is-me' : '') + '"' + (me ? ' aria-current="true"' : '') + '><figure><img src="assets/img/a-pf' + (i + 1) + '-cut.png" alt="" loading="lazy"></figure>' +
+          '<span class="rx-type__no">' + ('0' + (i + 1)) + '</span><b>' + esc(t[1]) + '</b><small>' + esc(t[2]) + '</small>' + (me ? '<em class="rx-type__me">나의 유형</em>' : '') + '</li>';
+      }).join('') + '</ol></section>';
+  }
+
+  /* 얼굴 사진(rx-face.jpg 700×881) 위 부위별 누르는 자리 — 화살표 방향 순서대로 */
+  var FACE_W = 700, FACE_H = 881;
+  var AREA_PTS = {
+    U1: [[180, 170], [240, 150], [300, 145], [360, 160]],
+    U2: [[205, 262], [212, 232], [232, 205], [265, 192]],
+    U4: [[330, 262], [360, 245], [390, 225], [410, 200]],
+    U5: [[265, 318], [300, 322], [335, 318], [360, 300]],
+    M1: [[330, 370], [370, 350], [405, 320], [430, 285]],
+    M2: [[340, 500], [365, 455], [385, 410], [395, 370]],
+    M3: [[330, 385], [318, 420], [298, 445], [285, 470]],
+    L1: [[200, 424], [232, 422], [262, 428], [292, 440]],
+    L4: [[270, 575], [335, 550], [395, 510], [445, 455]],
+    B1: [[345, 770], [345, 720], [345, 670], [345, 620]]
+  };
+  function areaCenter(code) {
+    var p = AREA_PTS[code]; if (!p) return [FACE_W / 2, FACE_H / 2];
+    var x = 0, y = 0; p.forEach(function (q) { x += q[0]; y += q[1]; });
+    return [x / p.length, y / p.length];
+  }
+  function zoomStyle(code) {
+    var c = areaCenter(code), S = 2.6, ar = FACE_H / FACE_W;
+    var px = c[0] / FACE_W, py = c[1] / FACE_H;
+    var bx = (S * px - 0.5) / (S - 1), by = (S * ar * py - 0.5) / (S * ar - 1);
+    bx = Math.max(0, Math.min(1, bx)); by = Math.max(0, Math.min(1, by));
+    return 'background-image:url(assets/img/rx-face.jpg);background-size:' + (S * 100) + '% auto;background-position:' + (bx * 100).toFixed(1) + '% ' + (by * 100).toFixed(1) + '%';
+  }
+  function modeKey(m) { m = String(m || '').toUpperCase(); return m.indexOf('EYE') > -1 ? 'eye' : m.indexOf('BODY') > -1 ? 'body' : m.indexOf('GLOW') > -1 ? 'glow' : m.indexOf('EMS') > -1 ? 'ems' : 'face'; }
+  function orderImg(t) {
+    if (/EYE SHOT/.test(t)) return 'm-mode-eye.jpg';
+    if (/FACE SHOT/.test(t)) return 'm-mode-face.jpg';
+    if (/BODY SHOT/.test(t)) return 'm-mode-body.jpg';
+    if (/GLOW/.test(t)) return 'm-mode-glow.jpg';
+    if (/EMS/.test(t)) return 'm-mode-ems.jpg';
+    if (/마스크|젤/.test(t)) return 'p-mask.jpg';
+    if (/기초|토너|에멀/.test(t)) return 'e-serum-water-v.jpg';
+    return '';
+  }
+  var LIFE_ICONS = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    water: '<path d="M7 3h10l-1.4 16.2a2 2 0 01-2 1.8h-3.2a2 2 0 01-2-1.8z"/><path d="M7.6 9h8.8"/>',
+    drop: '<path d="M12 3c3.5 4 6 7 6 10a6 6 0 01-12 0c0-3 2.5-6 6-10z"/>',
+    moon: '<path d="M20.5 13A8.5 8.5 0 1111 3.5a6.5 6.5 0 009.5 9.5z"/>',
+    face: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1.9 1.8 5.1 1.8 7 0M9 9.5h.01M15 9.5h.01"/>'
+  };
+  function lifeIcon(t) {
+    var k = /자외선|햇빛|선크림/.test(t) ? 'sun' : /섭취|물/.test(t) ? 'water' : /보습|수분/.test(t) ? 'drop' : /수면|잠/.test(t) ? 'moon' : 'face';
+    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + LIFE_ICONS[k] + '</svg>';
+  }
+  var REVIEW_IMG = ['t-techfit-use.jpg', 't-model-eye.jpg', 'g-step4.jpg'];
+
+  /* 기기 움직임 — 부위마다 자리를 옮겨 가며 한 칸씩 '꾹' 누르고, 누른 자리는 점으로 남긴다 */
+  function initDemo(root) {
+    Array.prototype.forEach.call((root || document).querySelectorAll('[data-demo]'), function (demo) {
+      if (demo._rx) return; demo._rx = true;
+      var stage = demo.querySelector('[data-stage]'), dev = demo.querySelector('[data-dev]'), marks = demo.querySelector('[data-marks]'), hud = demo.querySelector('[data-hud]');
+      var btns = Array.prototype.slice.call(demo.querySelectorAll('[data-shot]'));
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var cur = 0, run = 0, visible = false;
+      function pos(p) { return [(p[0] / FACE_W * 100), (p[1] / FACE_H * 100)]; }
+      function place(p) { var q = pos(p); dev.style.left = q[0] + '%'; dev.style.top = q[1] + '%'; }
+      function wait(ms, id) { return new Promise(function (res, rej) { setTimeout(function () { id === run ? res() : rej(); }, ms); }); }
+      function mark(p, mk) { var q = pos(p), i = document.createElement('i'); i.className = 'rx-mark rx-mark--' + mk; i.style.left = q[0] + '%'; i.style.top = q[1] + '%'; marks.appendChild(i); }
+      async function play(i, id) {
+        var b = btns[i], code = b.dataset.code, mk = b.dataset.mode, pts = AREA_PTS[code] || [areaCenter(code)];
+        btns.forEach(function (x) { x.classList.toggle('is-on', x === b); });
+        stage.dataset.mode = mk; marks.innerHTML = '';
+        hud.innerHTML = '<i class="rx-led rx-led--' + mk + '"></i>' + esc(b.querySelector('b').firstChild.textContent.trim()) + ' · ' + esc(b.querySelector('em').textContent);
+        dev.classList.remove('is-press'); dev.classList.add('is-away'); await wait(reduce ? 0 : 450, id);
+        place(pts[0]); await wait(reduce ? 0 : 60, id); dev.classList.remove('is-away'); await wait(reduce ? 0 : 650, id);
+        for (var n = 0; n < pts.length; n++) {
+          if (n) { place(pts[n]); await wait(reduce ? 0 : 520, id); }
+          dev.classList.add('is-press'); await wait(reduce ? 0 : 1100, id);
+          mark(pts[n], mk); dev.classList.remove('is-press'); await wait(reduce ? 0 : 260, id);
+        }
+        await wait(1300, id);
+      }
+      async function loop(start) {
+        var id = ++run; cur = start;
+        try { while (true) { if (!visible) { await wait(400, id); continue; } await play(cur, id); cur = (cur + 1) % btns.length; } } catch (e) {}
+      }
+      btns.forEach(function (b, i) { b.addEventListener('click', function () { loop(i); }); });
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .25 }).observe(stage);
+      else visible = true;
+      place((AREA_PTS[btns[0] && btns[0].dataset.code] || [[FACE_W * .6, FACE_H * .5]])[0]);
+      if (btns.length) loop(0);
+    });
+  }
   /* opts: { counts, roles:{key:'대표'|'보조'}, mixWith, parts, restart, locked, loginHref } */
   function html(key, opts) {
     opts = opts || {};
@@ -218,131 +318,122 @@
     var maxShot = Math.max.apply(null, (D.shots || []).map(function (s) { return s.count; }).concat([1]));
     var ingr = D.ingredients || [];
 
+    var shots = D.shots || [];
     var inner = (
-      cover(R, stats) + intro(R) +
+      typesStrip(k) + cover(R, stats) + intro(R) +
 
-      /* 왜 이 유형 */
-      '<section class="cku-card">' + title('reason', '왜 ' + esc(R.name) + '으로 진단된 걸까요?') +
-        (D.reason && D.reason.length ? paras(D.reason) : '') +
-        (D.evidence && D.evidence.length ? '<div class="cku-evidence"><p class="cku-evidence-title">고객님의 설문에서도 이런 답변이 많았습니다</p><ul class="cku-check-list">' +
-          D.evidence.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>' : '') +
-        dist +
-        (D.reasonNote ? '<p class="cku-result-desc">' + esc(D.reasonNote) + '</p>' : '') +
-      '</section>' +
-
-      /* 집중 케어 부위 */
-      (areas.length ? '<section class="cku-card">' + title('area', '집중 케어가 필요한 부위') +
-        '<div class="cku-area-layout"><div class="cku-area-list"><ol class="cku-top3">' + areas.map(function (a, i) {
-          return '<li class="cku-rank' + (i === 0 ? ' primary' : '') + '"><span class="cku-rank-no">' + (i + 1) + '</span><span class="cku-rank-body"><span class="cku-rank-name">' + esc(a.name) +
-            (a.pattern ? '<span class="cku-rank-pattern">' + esc(a.pattern) + '</span>' : '') + '</span></span><code class="cku-rank-code">' + esc(a.code) + '</code></li>';
-        }).join('') + '</ol><p class="cku-rank-legend"><b>U · M · L은?</b> 얼굴을 위(U) · 중앙(M) · 아래(L) 구역으로 나눈 케어클 에이징맵 좌표입니다.</p></div></div>' +
+      /* 집중 케어 부위 — 순위 없이 나란히 */
+      (areas.length ? '<section class="cku-card" data-sec="area">' + title('area', '집중 케어가 필요한 부위') +
+        (D.areaIntro ? '<p class="rx-lead">' + esc(D.areaIntro) + '</p>' : '') +
+        '<div class="rx-areas" style="--n:' + areas.length + '">' + areas.map(function (a) {
+          return '<article class="rx-area"><div class="rx-area__zoom" style="' + zoomStyle(a.code) + '" role="img" aria-label="' + esc(a.name) + ' 위치"><i class="rx-area__dot" aria-hidden="true"></i></div>' +
+            '<div class="rx-area__txt"><code class="rx-code">' + esc(a.code) + '</code><h4 class="rx-area__name">' + esc(a.name) + '</h4>' +
+            (a.pattern ? '<span class="rx-area__pat">' + esc(a.pattern) + '</span>' : '') + '</div></article>';
+        }).join('') + '</div>' +
+        '<p class="cku-rank-legend"><b>U · M · L · B는?</b> 얼굴을 위(U) · 중앙(M) · 아래(L) · 목(B) 구역으로 나눈 케어클 에이징맵 좌표입니다.</p>' +
         (D.areaText && D.areaText.length ? '<div class="cku-divided">' + paras(D.areaText) + '</div>' : '') +
       '</section>' : '') +
 
-      /* 홈케어 루틴 */
-      (D.homecare && D.homecare.length ? '<section class="cku-card">' + title('homecare', '홈케어 루틴') + '<ol class="cku-steps">' +
-        D.homecare.map(function (t, i) { return '<li><span class="cku-step-no">' + (i + 1) + '</span><span class="cku-step-body">' + esc(t) + '</span></li>'; }).join('') + '</ol></section>' : '') +
-
-      /* 추천 성분 · 생활습관 */
-      '<div class="cku-card-row">' +
-        '<section class="cku-card" data-ingredients>' + title('ingredient', '추천 성분', '<span class="cku-help" title="성분을 누르면 어떤 성분인지 설명이 열려요" aria-hidden="true">?</span>') +
-          '<p class="cku-chip-hint">성분을 누르면 어떤 성분인지 볼 수 있어요.</p><div class="cku-chip-row">' +
-          ingr.map(function (n) {
-            return INGREDIENT_INFO[n]
-              ? '<button type="button" class="cku-chip cku-chip-btn" data-ing="' + esc(n) + '" aria-expanded="false">' + esc(n) + '<svg class="cku-chip-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>'
-              : '<span class="cku-chip">' + esc(n) + '</span>';
-          }).join('') + '</div><div class="cku-chip-detail" data-ing-detail hidden></div></section>' +
-        (D.lifestyle && D.lifestyle.length ? '<section class="cku-card">' + title('lifestyle', '생활습관 포인트') + '<div class="cku-chip-row">' +
-          D.lifestyle.map(function (t) { return '<span class="cku-chip">' + esc(t) + '</span>'; }).join('') + '</div></section>' : '') +
-      '</div>' +
-
-      /* 디바이스 */
-      '<section class="cku-card">' + title('device', '뷰티 디바이스 종류와 특징') + '<div class="cku-table-wrap"><table class="cku-device-table"><tbody>' +
-        DEVICE_TABLE.map(function (d) { return '<tr><th>' + esc(d[0]) + '</th><td>' + esc(d[1]) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
-        (D.deviceRec ? '<p class="cku-callout">' + esc(D.deviceRec) + '</p>' : '') + '</section>' +
-
-      (D.rf && D.rf.length ? card('rf', '고주파(RF) 기술과 케어클', paras(D.rf)) : '') +
-
-      /* 맞춤 사용법 */
-      '<section class="cku-card">' + title('usage', '맞춤 사용법') +
-        (D.usage && D.usage.length ? paras(D.usage) : '') +
-        (D.order && D.order.length ? '<p class="cku-sub-title">관리 순서</p><ol class="cku-care-order">' + D.order.map(function (t, i) {
-          return '<li><span class="cku-care-no">' + (i + 1) + '</span><span class="cku-care-label">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
-        (D.frequency ? '<p class="cku-callout"><b>권장 빈도 · </b>' + esc(D.frequency) + '</p>' : '') +
+      /* 홈케어 루틴 + 추천 성분 + 생활습관 */
+      '<section class="cku-card" data-sec="care">' + title('homecare', '홈케어 루틴 · 추천 성분 · 생활습관') +
+        '<div class="rx-care">' +
+          '<figure class="rx-care__img"><img src="assets/img/e-serum-warm-v.jpg" alt="" loading="lazy"></figure>' +
+          (D.homecare && D.homecare.length ? '<ol class="rx-num">' + D.homecare.map(function (t, i) {
+            return '<li><span class="rx-num__no">' + (i + 1) + '</span><p>' + esc(t) + '</p></li>'; }).join('') + '</ol>' : '') +
+        '</div>' +
+        '<div class="rx-care__grid">' +
+          '<div class="rx-care__box" data-ingredients><p class="rx-care__h"><span>추천 성분</span><small>성분을 누르면 설명이 열려요</small></p><div class="cku-chip-row">' +
+            ingr.map(function (n) {
+              return INGREDIENT_INFO[n]
+                ? '<button type="button" class="cku-chip cku-chip-btn" data-ing="' + esc(n) + '" aria-expanded="false">' + esc(n) + '<svg class="cku-chip-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>'
+                : '<span class="cku-chip">' + esc(n) + '</span>';
+            }).join('') + '</div><div class="cku-chip-detail" data-ing-detail hidden></div></div>' +
+          (D.lifestyle && D.lifestyle.length ? '<div class="rx-care__box"><p class="rx-care__h"><span>생활습관 포인트</span></p><ul class="rx-life">' +
+            D.lifestyle.map(function (t) { return '<li><span class="rx-life__ico" aria-hidden="true">' + lifeIcon(t) + '</span>' + esc(t) + '</li>'; }).join('') + '</ul></div>' : '') +
+        '</div>' +
       '</section>' +
 
-      /* SHOT 모드 가이드 */
-      (D.shots && D.shots.length ? '<section class="cku-card">' + title('shot', 'SHOT 모드 가이드') + '<div class="cku-shot-list">' +
-        D.shots.map(function (s) {
-          return '<div class="cku-shot-item"><div class="cku-shot-head"><span class="cku-shot-area">' + esc(s.name) + '<code class="cku-rank-code">' + esc(s.code) + '</code></span><span class="cku-shot-count">' + s.count + '샷</span></div>' +
-            '<p class="cku-shot-dir">' + esc(s.mode) + ' · ' + esc(s.dir) + '</p><div class="cku-shot-bar"><span style="width:' + Math.round(s.count / maxShot * 100) + '%"></span></div></div>';
-        }).join('') + '</div>' +
-        (D.shotTotal ? '<div class="cku-shot-total"><span class="cku-shot-total-value">총 ' + D.shotTotal + '샷</span><span class="cku-shot-total-note">SHOT 모드는 7분 후 자동 종료되니, 남은 부위가 있으면 다시 켜서 이어 진행하세요.</span></div>' : '') +
-      '</section>' : '') +
+      /* 고주파 기술 + 맞춤 사용법 + SHOT 모드 — 기기 움직임 애니메이션 */
+      '<section class="cku-card" data-sec="tech">' + title('shot', '케어클 TECH FIT 맞춤 사용법') +
+        (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="assets/img/g-why-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
+          '<div class="rx-rf__txt"><p class="rx-kicker">고주파(RF) 기술과 케어클</p>' + paras(D.rf) + '</div></div>' : '') +
+        (shots.length ? '<div class="rx-demo" data-demo>' +
+          '<div class="rx-demo__stage" data-stage><img class="rx-demo__face" src="assets/img/rx-face.jpg" alt="얼굴 위에서 TECH FIT을 옮겨 가며 누르는 순서" loading="lazy">' +
+            '<div class="rx-demo__marks" data-marks aria-hidden="true"></div>' +
+            '<div class="rx-demo__dev" data-dev aria-hidden="true"><i class="rx-demo__led"></i><img src="assets/img/cut-device-clean.png" alt=""></div>' +
+            '<p class="rx-demo__hud" data-hud aria-live="polite"></p></div>' +
+          '<div class="rx-demo__side">' +
+            (D.usage && D.usage.length ? '<div class="rx-demo__usage">' + paras(D.usage) + '</div>' : '') +
+            '<p class="rx-kicker">부위별 SHOT 가이드 <small>누르면 그 부위를 보여 드려요</small></p>' +
+            '<ol class="rx-shots">' + shots.map(function (s, i) {
+              return '<li><button type="button" class="rx-shot" data-shot="' + i + '" data-code="' + esc(s.code) + '" data-mode="' + esc(modeKey(s.mode)) + '">' +
+                '<span class="rx-shot__no">' + (i + 1) + '</span><span class="rx-shot__body"><b>' + esc(s.name) + ' <code class="rx-code">' + esc(s.code) + '</code></b>' +
+                '<em><i class="rx-led rx-led--' + modeKey(s.mode) + '"></i>' + esc(s.mode) + ' · ' + esc(s.dir) + '</em></span><span class="rx-shot__cnt">' + s.count + '<small>샷</small></span></button></li>';
+            }).join('') + '</ol>' +
+            (D.shotTotal ? '<p class="rx-total"><b>총 ' + D.shotTotal + '샷</b><span>SHOT 모드는 7분 후 자동 종료돼요. 남은 부위가 있으면 다시 켜서 이어 하세요.</span></p>' : '') +
+          '</div></div>' : '') +
+        (D.order && D.order.length ? '<p class="rx-kicker">관리 순서</p><ol class="rx-order" style="--n:' + D.order.length + '">' + D.order.map(function (t, i) {
+          var im = orderImg(t);
+          return '<li><span class="rx-order__img">' + (im ? '<img src="assets/img/' + im + '" alt="" loading="lazy">' : icon('homecare')) + '</span><span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
+        (D.frequency ? '<p class="rx-freq"><b>권장 빈도</b>' + esc(D.frequency) + '</p>' : '') +
+      '</section>' +
 
       /* SHOT 이후 마무리 단계 */
-      (D.modes && D.modes.length ? '<section class="cku-card">' + title('usage', 'SHOT 이후 마무리 단계') + '<div class="cku-mode-steps">' +
+      (D.modes && D.modes.length ? '<section class="cku-card">' + title('usage', 'SHOT 이후 마무리 단계') + '<div class="rx-modes">' +
         D.modes.map(function (m) {
           var badge = m.required === true ? '필수' : m.required === false ? '선택' : '';
-          return '<div class="cku-mode-step' + (m.required ? ' required' : '') + '"><p class="cku-mode-head">' + esc(m.name.replace(/\s*모드$/, '')) +
-            (badge ? '<span class="cku-mode-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="cku-mode-duration">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
-            (m.desc ? '<p class="cku-mode-desc">' + esc(m.desc) + '</p>' : '') + '</div>';
+          var mk = /EMS/.test(m.name) ? 'ems' : 'glow';
+          return '<div class="rx-mode"><figure class="rx-mode__img"><img src="assets/img/m-mode-' + mk + '.jpg" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
+            (badge ? '<span class="rx-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="rx-mode__dur">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
+            (m.desc ? '<p class="rx-mode__desc">' + esc(m.desc) + '</p>' : '') + '</div></div>';
         }).join('') + '</div></section>' : '') +
-
-      /* SHOT 모드 FAQ */
-      '<section class="cku-card">' + title('faq', 'SHOT 모드, 이렇게 사용하세요') + '<div class="cku-faq-list">' +
-        SHOT_FAQ.map(function (f) {
-          return '<div class="cku-faq-item"><p class="cku-faq-q">' + esc(f[0]) + '</p>' +
-            (f[0].indexOf('강도') > -1 ? '<div class="cku-levels" aria-hidden="true">' + [1, 2, 3, 4, 5].map(function (n) { return '<span class="cku-level cku-level-' + n + '">' + n + '</span>'; }).join('') + '</div>' : '') +
-            '<p class="cku-faq-a">' + esc(f[1]) + '</p></div>';
-        }).join('') + '</div></section>' +
-
-      (D.busy && D.busy.length ? card('busy', '바빠서 모든 단계가 부담되는 날에는', paras(D.busy)) : '') +
 
       /* AI 맞춤 상담 */
       '<section class="cku-card cku-card-dark">' + title('ai', 'AI 맞춤 상담') +
+        '<div class="rx-ai"><p class="rx-ai__who"><span class="rx-ai__av">AI</span><b>careCL AI 피부 에이전트</b><small>설문 결과를 읽고 고객님께 쓴 상담 글</small></p>' +
         (k === 'mixed'
           ? '<div class="cku-ai-answer">' + AI_SAMPLE.map(function (t) { return '<p>' + aiHighlight(esc(t)) + '</p>'; }).join('') + '</div>'
           : '<div class="cku-ai-answer"><p>결과를 바탕으로 AI가 고객님께 쓴 맞춤 상담 글이 이 자리에 들어갑니다. (답변은 결과마다 한 번 만들어 저장돼요.)</p></div>') +
-      '</section>' +
+      '</div></section>' +
 
       /* 혜택 */
-      '<section class="cku-card">' + title('coupon', 'AI 분석 결과 고객 전용 혜택') + '<div class="cku-coupon-grid">' +
-        '<div class="cku-coupon"><div class="cku-coupon-desc"><p><b>아직 케어클이 없으시다면</b></p><p>지금 TECH FIT을 시작하기 좋은 때</p><p>정가 820,000원 → 30% 할인 568,000원</p><p>＋ 자사몰 첫 구매 쿠폰 5만원 할인 → 쿠폰 적용 시 최종 518,000원</p></div>' +
-          '<a class="cku-btn cku-btn-primary" href="products.html">쿠폰 받고 TECH FIT 시작하기</a></div>' +
-        '<div class="cku-coupon"><div class="cku-coupon-desc"><p><b>이미 케어클을 쓰고 계신다면</b></p><p>소모품을 더 알뜰하게</p><p>그리드 마스크팩 · 콜라겐 젤 등 소모품을 자사몰에서 재구매할 때 쓰는 쿠폰</p><p>＋ 자사몰 소모품 할인 쿠폰 20% 할인</p></div>' +
-          '<a class="cku-btn cku-btn-primary" href="cosmetics.html">소모품 쿠폰 받기</a></div>' +
+      '<section class="cku-card">' + title('coupon', 'AI 분석 결과 고객 전용 혜택') + '<div class="rx-coupons">' +
+        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/c-techfit-case.jpg" alt="케이스에 담긴 TECH FIT" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">아직 케어클이 없으시다면</p><p class="rx-coupon__t">지금 TECH FIT을 시작하기 좋은 때</p>' +
+          '<p class="rx-coupon__price"><s>820,000원</s><b>518,000원</b><span>30% 할인 568,000원 + 첫 구매 쿠폰 5만원</span></p>' +
+          '<a class="cku-btn cku-btn-primary" href="products.html">쿠폰 받고 TECH FIT 시작하기</a></div></div>' +
+        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/n-mask-packs.jpg" alt="그리드 마스크팩" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">이미 케어클을 쓰고 계신다면</p><p class="rx-coupon__t">소모품을 더 알뜰하게</p>' +
+          '<p class="rx-coupon__price"><b>20% 할인</b><span>그리드 마스크팩 · 콜라겐 젤 등 소모품 재구매 쿠폰</span></p>' +
+          '<a class="cku-btn cku-btn-primary" href="cosmetics.html">소모품 쿠폰 받기</a></div></div>' +
       '</div></section>' +
 
       '<p class="cku-result-note">' + DISCLAIMER + '</p>' +
 
-      /* 실제 후기 */
+      /* 실제 후기 — TECH FIT 사진과 함께 */
       '<section class="cku-card">' + title('review', '비슷한 고민을 가진 고객의 실제 후기') + '<div class="cku-reviews">' +
-        '<p class="cku-reviews-lead">케어클을 쓰신 분들이 남긴 실제 구매 후기 중에서, 고객님 결과와 맞닿은 이야기를 담은 글을 골랐습니다.</p><ul class="cku-review-list">' +
-        REVIEWS.map(function (r) {
-          return '<li class="cku-review"><div class="cku-review-head"><span class="cku-review-tagline">' + esc(r.tag) + '</span><span class="cku-review-rating" aria-label="평점 ' + r.rating + '점"><span aria-hidden="true">★</span> ' + r.rating + '</span></div>' +
+        '<p class="cku-reviews-lead">케어클을 쓰신 분들이 남긴 실제 구매 후기 중에서, 고객님 결과와 맞닿은 이야기를 담은 글을 골랐습니다.</p><ul class="rx-reviews">' +
+        REVIEWS.map(function (r, i) {
+          return '<li class="cku-review rx-review"><figure class="rx-review__img"><img src="assets/img/' + REVIEW_IMG[i % REVIEW_IMG.length] + '" alt="" loading="lazy"></figure><div class="rx-review__txt"><div class="cku-review-head"><span class="cku-review-tagline">' + esc(r.tag) + '</span><span class="cku-review-rating" aria-label="평점 ' + r.rating + '점"><span aria-hidden="true">★</span> ' + r.rating + '</span></div>' +
             '<p class="cku-review-body cku-review-body-clamp">' + esc(r.body) + '</p><button type="button" class="cku-review-more" hidden>더보기</button>' +
-            '<p class="cku-review-date">' + esc(r.date) + '</p></li>';
+            '<p class="cku-review-date">' + esc(r.date) + '</p></div></li>';
         }).join('') +
-        '</ul><p class="cku-reviews-note">쇼핑몰에 등록된 구매 후기를 그대로 옮긴 것이며, 내용을 고치지 않았습니다. 후기는 개인의 사용 경험으로 효과를 보장하지 않습니다.</p></div></section>' +
+        '</ul><p class="cku-reviews-note">쇼핑몰에 등록된 구매 후기를 그대로 옮긴 것이며, 내용을 고치지 않았습니다. 사진은 이해를 돕기 위한 연출 이미지입니다. 후기는 개인의 사용 경험으로 효과를 보장하지 않습니다.</p></div></section>' +
 
       share() + actions(opts)
     );
     if (!opts.locked) return wrap(inner);
 
-    /* 로그인 전 — 유형 소개까지 보여주고, 그 아래 상세 카드(진단 이유·집중 부위·홈케어)는 흐리게 깔고 잠금 상자를 띄운다 */
-    var from = inner.indexOf('<section class="cku-card">' + title('reason', ''));
-    from = from > -1 ? from : inner.indexOf('<section class="cku-card"><h3 class="cku-card-title"><span class="cku-card-icon">' + icon('reason'));
-    var to = inner.indexOf('<div class="cku-card-row">');
+    /* 로그인 전 — 유형 소개까지 보여주고, 그 아래 상세 카드(집중 부위·홈케어)는 흐리게 깔고 잠금 상자를 띄운다 */
+    var from = inner.indexOf('<section class="cku-card" data-sec="area">');
+    var to = inner.indexOf('<section class="cku-card" data-sec="tech">');
     var preview = from > -1 && to > from ? inner.slice(from, to) : '';
-    return wrap(cover(R) + intro(R) +
+    return wrap(typesStrip(k) + cover(R) + intro(R) +
       '<div class="cku-lock">' +
         '<div class="cku-lock-preview" aria-hidden="true" inert>' + preview + '</div>' +
         '<div class="cku-lock-box" role="region" aria-label="로그인 안내">' +
           '<span class="cku-lock-ico">' + icon('lock') + '</span>' +
           '<p class="cku-lock-title">로그인하면 더 자세한<br>AI 피부 진단을 받을 수 있어요</p>' +
-          '<p class="cku-lock-desc">고객님만을 위한 상세 진단 이유, 집중 케어 부위, <br>맞춤 홈케어 루틴과 AI 맞춤 상담을 확인해보세요.</p>' +
-          '<ul class="cku-lock-list"><li>진단 이유</li><li>집중 케어 부위 TOP 3</li><li>맞춤 홈케어 루틴</li><li>SHOT 모드 가이드</li><li>AI 맞춤 상담</li><li>전용 혜택</li></ul>' +
+          '<p class="cku-lock-desc">고객님만을 위한 집중 케어 부위, 맞춤 홈케어 루틴, <br>TECH FIT 사용법과 AI 맞춤 상담을 확인해보세요.</p>' +
+          '<ul class="cku-lock-list"><li>집중 케어 부위</li><li>홈케어 루틴 · 성분</li><li>TECH FIT 맞춤 사용법</li><li>AI 맞춤 상담</li><li>전용 혜택</li></ul>' +
           '<a class="cku-btn cku-btn-primary cku-lock-btn" href="' + esc(opts.loginHref || '#') + '">로그인하고 전체 결과 보기</a>' +
         '</div>' +
       '</div>' +
@@ -363,6 +454,7 @@
         if (more && full > h + 1) more.hidden = false;
       });
     }, 120);
+    initDemo(root);
   }
 
   /* 성분 칩 펼치기 · 후기 더보기 · 링크 복사 (한 번에 하나만 펼친다) */

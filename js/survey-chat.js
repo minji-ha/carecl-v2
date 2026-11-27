@@ -184,6 +184,9 @@
       '<div><dt>분석 방식</dt><dd>설문 18문항</dd></div><div><dt>분석 기준</dt><dd>Aging Map 22</dd></div></dl>' +
       '<p class="svc-paper__h">진단 결과<small>Result</small></p>';
     // 진단 결과(cku-cover) + 바로 뒤 제목 없는 소개 카드(소견)까지만 — 잠금 상자 · 공유 · 다시 하기는 밖에 둔다
+    // 6가지 유형 띠 — 진단서 머리 바로 아래(진단 결과보다 먼저)
+    var types = res.querySelector(':scope > .rx-types');
+    if (types) paper.insertBefore(types, paper.querySelector('.svc-paper__h'));
     var cover = res.querySelector(':scope > .cku-cover');
     if (cover) {
       var intro = cover.nextElementSibling;
