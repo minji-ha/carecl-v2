@@ -212,6 +212,20 @@
     L4: [[270, 575], [335, 550], [395, 510], [445, 455]],
     B1: [[345, 770], [345, 720], [345, 670], [345, 620]]
   };
+  /* 사용 가이드 일러스트(rx-ill-front.png 696×729, 가이드북 13쪽 정면 그림에서 화살표 뺀 것) 위 누르는 자리 */
+  var ILL_W = 696, ILL_H = 729;
+  var ILL_PTS = {
+    U1: [[330, 240], [370, 238], [410, 243], [445, 252]],
+    U2: [[345, 305], [350, 280], [365, 262], [390, 252]],
+    U4: [[472, 338], [480, 318], [480, 296], [472, 275]],
+    U5: [[395, 372], [430, 378], [462, 372], [482, 352]],
+    M1: [[420, 410], [448, 395], [468, 375], [478, 350]],
+    M2: [[420, 500], [445, 465], [462, 430], [470, 400]],
+    M3: [[420, 405], [410, 430], [398, 452], [392, 478]],
+    L1: [[325, 445], [345, 442], [365, 445], [385, 452]],
+    L4: [[365, 535], [405, 512], [445, 482], [475, 448]],
+    B1: [[370, 690], [370, 650], [368, 610], [365, 575]]
+  };
   function areaCenter(code) {
     var p = AREA_PTS[code]; if (!p) return [FACE_W / 2, FACE_H / 2];
     var x = 0, y = 0; p.forEach(function (q) { x += q[0]; y += q[1]; });
@@ -226,7 +240,19 @@
   }
   function modeKey(m) { m = String(m || '').toUpperCase(); return m.indexOf('EYE') > -1 ? 'eye' : m.indexOf('BODY') > -1 ? 'body' : m.indexOf('GLOW') > -1 ? 'glow' : m.indexOf('EMS') > -1 ? 'ems' : 'face'; }
   /* 관리 순서 사진 — 받은 사진만 넣는다 (11-27: 기초 관리 = 케어클20757 토닝 세럼) */
-  function orderPhoto(t) { return /기초|토너|에멀/.test(t) ? 'rx-basic.jpg' : /마스크/.test(t) ? 'rx-mask.jpg' : ''; }
+  /* 관리 순서 그림 — 세안 · 기초 관리 · 그리드 마스크팩은 선 아이콘, 모드 단계는 기기 사진 (11-27 요청) */
+  var ORDER_ICONS = {
+    wash: '<path d="M12 3.5c2.2 2.6 3.6 4.6 3.6 6.4a3.6 3.6 0 01-7.2 0c0-1.8 1.4-3.8 3.6-6.4z"/><path d="M4 15.5c1.6 1.2 3 1.2 4.6 0s3-1.2 4.6 0 3 1.2 4.6 0 2.6-1 3.2-.6"/><path d="M4 19.5c1.6 1.2 3 1.2 4.6 0s3-1.2 4.6 0 3 1.2 4.6 0 2.6-1 3.2-.6"/>',
+    basic: '<rect x="8" y="8" width="8" height="13" rx="2"/><path d="M10 8V5.5h4V8M10.5 3h3M12 3v2.5"/><path d="M8 13h8" opacity=".5"/>',
+    mask: '<path d="M12 3c-4.4 0-7.5 3.3-7.5 8.2 0 5.6 3.6 9.8 7.5 9.8s7.5-4.2 7.5-9.8C19.5 6.3 16.4 3 12 3z"/><path d="M8.3 9.8h2.4M13.3 9.8h2.4M10.2 16.2h3.6"/><path d="M4.8 12.5h14.4M12 3v18M7.3 5.6v14M16.7 5.6v14" opacity=".35"/>',
+    dot: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.6"/>'
+  };
+  function orderMedia(t) {
+    var ph = orderImg(t);
+    if (ph && !/기초|토너|에멀|마스크|젤/.test(t)) return '<img src="assets/img/' + ph + '" alt="" loading="lazy">';
+    var k = /세안/.test(t) ? 'wash' : /마스크|젤/.test(t) ? 'mask' : /기초|토너|에멀/.test(t) ? 'basic' : 'dot';
+    return '<svg class="rx-order__ico" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ORDER_ICONS[k] + '</svg>';
+  }
   function orderImg(t) {
     if (/EYE SHOT/.test(t)) return 'm-mode-eye.jpg';
     if (/FACE SHOT/.test(t)) return 'm-mode-face.jpg';
@@ -258,12 +284,12 @@
       var btns = Array.prototype.slice.call(demo.querySelectorAll('[data-shot]'));
       var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
       var cur = 0, run = 0, visible = false;
-      function pos(p) { return [(p[0] / FACE_W * 100), (p[1] / FACE_H * 100)]; }
+      function pos(p) { return [(p[0] / ILL_W * 100), (p[1] / ILL_H * 100)]; }
       function place(p) { var q = pos(p); dev.style.left = q[0] + '%'; dev.style.top = q[1] + '%'; }
       function wait(ms, id) { return new Promise(function (res, rej) { setTimeout(function () { id === run ? res() : rej(); }, ms); }); }
       function mark(p, mk) { var q = pos(p), i = document.createElement('i'); i.className = 'rx-mark rx-mark--' + mk; i.style.left = q[0] + '%'; i.style.top = q[1] + '%'; marks.appendChild(i); }
       async function play(i, id) {
-        var b = btns[i], code = b.dataset.code, mk = b.dataset.mode, pts = AREA_PTS[code] || [areaCenter(code)];
+        var b = btns[i], code = b.dataset.code, mk = b.dataset.mode, pts = ILL_PTS[code] || [[ILL_W / 2, ILL_H / 2]];
         btns.forEach(function (x) { x.classList.toggle('is-on', x === b); });
         stage.dataset.mode = mk; marks.innerHTML = '';
         hud.innerHTML = '<i class="rx-led rx-led--' + mk + '"></i>' + esc(b.querySelector('b').firstChild.textContent.trim()) + ' · ' + esc(b.querySelector('em').textContent);
@@ -283,7 +309,7 @@
       btns.forEach(function (b, i) { b.addEventListener('click', function () { loop(i); }); });
       if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .25 }).observe(stage);
       else visible = true;
-      place((AREA_PTS[btns[0] && btns[0].dataset.code] || [[FACE_W * .6, FACE_H * .5]])[0]);
+      place((ILL_PTS[btns[0] && btns[0].dataset.code] || [[ILL_W * .6, ILL_H * .5]])[0]);
       if (btns.length) loop(0);
     });
   }
@@ -358,10 +384,10 @@
 
       /* 고주파 기술 + 맞춤 사용법 + SHOT 모드 — 기기 움직임 애니메이션 */
       '<section class="cku-card" data-sec="tech">' + title('shot', '케어클 TECH FIT 맞춤 사용법') +
-        (D.rf && D.rf.length ? '<div class="rx-rf rx-rf--text">' +
+        (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="assets/img/g-why-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
           '<div class="rx-rf__txt"><p class="rx-kicker">고주파(RF) 기술과 케어클</p>' + paras(D.rf) + '</div></div>' : '') +
         (shots.length ? '<div class="rx-demo" data-demo>' +
-          '<div class="rx-demo__stage" data-stage><img class="rx-demo__face" src="assets/img/rx-face.jpg" alt="얼굴 위에서 TECH FIT을 옮겨 가며 누르는 순서" loading="lazy">' +
+          '<div class="rx-demo__stage" data-stage><img class="rx-demo__face" src="assets/img/rx-ill-front.png" alt="얼굴 그림 위에서 TECH FIT을 옮겨 가며 누르는 순서" loading="lazy">' +
             '<div class="rx-demo__marks" data-marks aria-hidden="true"></div>' +
             '<div class="rx-demo__dev" data-dev aria-hidden="true"><i class="rx-demo__led"></i><img src="assets/img/cut-device-clean.png" alt=""></div>' +
             '<p class="rx-demo__hud" data-hud aria-live="polite"></p></div>' +
@@ -376,7 +402,7 @@
             (D.shotTotal ? '<p class="rx-total"><b>총 ' + D.shotTotal + '샷</b><span>SHOT 모드는 7분 후 자동 종료돼요. 남은 부위가 있으면 다시 켜서 이어 하세요.</span></p>' : '') +
           '</div></div>' : '') +
         (D.order && D.order.length ? '<p class="rx-kicker">관리 순서</p><ol class="rx-order" style="--n:' + D.order.length + '">' + D.order.map(function (t, i) {
-          return '<li' + (orderPhoto(t) ? ' class="has-img"' : '') + '>' + (orderPhoto(t) ? '<span class="rx-order__img"><img src="assets/img/' + orderPhoto(t) + '" alt="" loading="lazy"></span>' : '') + '<span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
+          return '<li class="has-img"><span class="rx-order__img">' + orderMedia(t) + '</span><span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
         (D.frequency ? '<p class="rx-freq"><b>권장 빈도</b>' + esc(D.frequency) + '</p>' : '') +
       '</section>' +
 
@@ -385,7 +411,7 @@
         D.modes.map(function (m) {
           var badge = m.required === true ? '필수' : m.required === false ? '선택' : '';
           var mk = /EMS/.test(m.name) ? 'ems' : 'glow';
-          return '<div class="rx-mode rx-mode--text"><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
+          return '<div class="rx-mode"><figure class="rx-mode__img' + (mk === 'ems' ? ' is-ill' : '') + '"><img src="assets/img/' + (mk === 'ems' ? 'rx-ill-ems.png' : 'm-mode-' + mk + '.jpg') + '" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
             (badge ? '<span class="rx-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="rx-mode__dur">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
             (m.desc ? '<p class="rx-mode__desc">' + esc(m.desc) + '</p>' : '') + '</div></div>';
         }).join('') + '</div></section>' : '') +
