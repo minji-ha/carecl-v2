@@ -677,3 +677,15 @@ body.survey--chat.is-leaving{opacity:0}
 .sv--chat .checkup .cku-care-no,.sv--chat .checkup .cku-step-no{background:var(--ink)!important}
 .sv--chat .checkup .cku-coupon .cku-btn{background:var(--ink)!important;border-color:var(--ink)!important}
 .sv--chat .checkup .cku-review-tagline{color:var(--ink2)!important}
+
+/* ══ v10 (2026-11-27) — 오각형 그래프 박스 없애기 · 도장 VERIFIED 빼기 · 집중 부위 번호 색 통일 ══ */
+.sv--chat .svc-paper .cku-cover-radar{border:0!important;background:none!important;box-shadow:none!important;aspect-ratio:auto;overflow:visible}
+.sv--chat .svc-paper .cku-cover-radar::after{display:none!important}
+.sv--chat .svc-paper .cku-cover-radar svg{max-width:340px}
+.sv--chat .svc-paper .cku-cover-radar .rd-axis{font-size:14px}
+.sv--chat .svc-paper .cku-cover-radar .rd-role{font-size:12px}
+.svc-seal::after{content:none!important;display:none!important}
+.svc-seal small{margin-bottom:0}
+.sv--chat .checkup .cku-rank.primary{box-shadow:none!important}
+.sv--chat .checkup .cku-rank.primary .cku-rank-no{background:#C46A3A!important;color:#fff!important}
+.sv--chat .checkup .cku-rank.primary .cku-rank-code{background:#ECE7E0!important;color:#5F5852!important;border-color:#5F5852!important}
