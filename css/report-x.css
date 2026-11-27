@@ -203,3 +203,18 @@
   .checkup .rx-area__dot::after{animation:none}
   .checkup .rx-demo__dev{transition:none}
 }
+
+/* ── 11-27 오후: 02 사진 교체 · 다른 사진 빼기 · 후기 사진 자리 ── */
+.checkup .rx-care__img img{object-position:62% 30%}
+.checkup .rx-rf--text{grid-template-columns:1fr}
+.checkup .rx-mode--text{grid-template-columns:1fr}
+.checkup .rx-order li:not(:last-child)::after{top:14px;left:calc(50% + 22px);right:calc(-50% + 22px)}
+.checkup .rx-order__no{margin-top:0;width:30px;height:30px;font-size:13px;box-shadow:none}
+.checkup .rx-ph{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#F3EEE9 0 10px,#EFE9E3 10px 20px);border-bottom:1px dashed #DCCFC4}
+.checkup .rx-ph span{padding:6px 12px;border-radius:999px;border:1px dashed #C9B8AA;background:rgba(255,255,255,.7);font-size:12px;color:#9A8D82}
+/* 관리 순서: 사진 받은 칸만 사진 위 · 번호 겹침, 나머지 칸은 번호를 사진 높이 중간에 */
+.checkup .rx-order li:not(.has-img) .rx-order__no{width:72px;height:72px;margin-bottom:8px;font-size:20px;background:var(--rx-peach);color:var(--rx-accent)}
+.checkup .rx-order li:not(:last-child)::after{top:36px}
+.checkup .rx-order li.has-img .rx-order__img{width:72px;height:72px;background:#fff;box-shadow:inset 0 0 0 1px var(--rx-line)}
+.checkup .rx-order li.has-img .rx-order__no{margin-top:-22px;z-index:1;box-shadow:0 0 0 3px #fff}
+@media (max-width:640px){.checkup .rx-order li:not(.has-img) .rx-order__no{width:60px;height:60px}.checkup .rx-order li.has-img .rx-order__img{width:60px;height:60px}}

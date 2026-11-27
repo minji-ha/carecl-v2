@@ -225,6 +225,8 @@
     return 'background-image:url(assets/img/rx-face.jpg);background-size:' + (S * 100) + '% auto;background-position:' + (bx * 100).toFixed(1) + '% ' + (by * 100).toFixed(1) + '%';
   }
   function modeKey(m) { m = String(m || '').toUpperCase(); return m.indexOf('EYE') > -1 ? 'eye' : m.indexOf('BODY') > -1 ? 'body' : m.indexOf('GLOW') > -1 ? 'glow' : m.indexOf('EMS') > -1 ? 'ems' : 'face'; }
+  /* 관리 순서 사진 — 받은 사진만 넣는다 (11-27: 기초 관리 = 케어클20757 토닝 세럼) */
+  function orderPhoto(t) { return /기초|토너|에멀/.test(t) ? 'rx-basic.jpg' : /마스크/.test(t) ? 'rx-mask.jpg' : ''; }
   function orderImg(t) {
     if (/EYE SHOT/.test(t)) return 'm-mode-eye.jpg';
     if (/FACE SHOT/.test(t)) return 'm-mode-face.jpg';
@@ -338,7 +340,7 @@
       /* 홈케어 루틴 + 추천 성분 + 생활습관 */
       '<section class="cku-card" data-sec="care">' + title('homecare', '홈케어 루틴 · 추천 성분 · 생활습관') +
         '<div class="rx-care">' +
-          '<figure class="rx-care__img"><img src="assets/img/e-serum-warm-v.jpg" alt="" loading="lazy"></figure>' +
+          '<figure class="rx-care__img"><img src="assets/img/rx-mirror.jpg" alt="거울 앞에서 피부를 살피는 여성" loading="lazy"></figure>' +
           (D.homecare && D.homecare.length ? '<ol class="rx-num">' + D.homecare.map(function (t, i) {
             return '<li><span class="rx-num__no">' + (i + 1) + '</span><p>' + esc(t) + '</p></li>'; }).join('') + '</ol>' : '') +
         '</div>' +
@@ -356,7 +358,7 @@
 
       /* 고주파 기술 + 맞춤 사용법 + SHOT 모드 — 기기 움직임 애니메이션 */
       '<section class="cku-card" data-sec="tech">' + title('shot', '케어클 TECH FIT 맞춤 사용법') +
-        (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="assets/img/g-why-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
+        (D.rf && D.rf.length ? '<div class="rx-rf rx-rf--text">' +
           '<div class="rx-rf__txt"><p class="rx-kicker">고주파(RF) 기술과 케어클</p>' + paras(D.rf) + '</div></div>' : '') +
         (shots.length ? '<div class="rx-demo" data-demo>' +
           '<div class="rx-demo__stage" data-stage><img class="rx-demo__face" src="assets/img/rx-face.jpg" alt="얼굴 위에서 TECH FIT을 옮겨 가며 누르는 순서" loading="lazy">' +
@@ -374,8 +376,7 @@
             (D.shotTotal ? '<p class="rx-total"><b>총 ' + D.shotTotal + '샷</b><span>SHOT 모드는 7분 후 자동 종료돼요. 남은 부위가 있으면 다시 켜서 이어 하세요.</span></p>' : '') +
           '</div></div>' : '') +
         (D.order && D.order.length ? '<p class="rx-kicker">관리 순서</p><ol class="rx-order" style="--n:' + D.order.length + '">' + D.order.map(function (t, i) {
-          var im = orderImg(t);
-          return '<li><span class="rx-order__img">' + (im ? '<img src="assets/img/' + im + '" alt="" loading="lazy">' : icon('homecare')) + '</span><span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
+          return '<li' + (orderPhoto(t) ? ' class="has-img"' : '') + '>' + (orderPhoto(t) ? '<span class="rx-order__img"><img src="assets/img/' + orderPhoto(t) + '" alt="" loading="lazy"></span>' : '') + '<span class="rx-order__no">' + (i + 1) + '</span><span class="rx-order__t">' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') +
         (D.frequency ? '<p class="rx-freq"><b>권장 빈도</b>' + esc(D.frequency) + '</p>' : '') +
       '</section>' +
 
@@ -384,7 +385,7 @@
         D.modes.map(function (m) {
           var badge = m.required === true ? '필수' : m.required === false ? '선택' : '';
           var mk = /EMS/.test(m.name) ? 'ems' : 'glow';
-          return '<div class="rx-mode"><figure class="rx-mode__img"><img src="assets/img/m-mode-' + mk + '.jpg" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
+          return '<div class="rx-mode rx-mode--text"><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
             (badge ? '<span class="rx-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="rx-mode__dur">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
             (m.desc ? '<p class="rx-mode__desc">' + esc(m.desc) + '</p>' : '') + '</div></div>';
         }).join('') + '</div></section>' : '') +
@@ -402,7 +403,7 @@
         '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/c-techfit-case.jpg" alt="케이스에 담긴 TECH FIT" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">아직 케어클이 없으시다면</p><p class="rx-coupon__t">지금 TECH FIT을 시작하기 좋은 때</p>' +
           '<p class="rx-coupon__price"><s>820,000원</s><b>518,000원</b><span>30% 할인 568,000원 + 첫 구매 쿠폰 5만원</span></p>' +
           '<a class="cku-btn cku-btn-primary" href="products.html">쿠폰 받고 TECH FIT 시작하기</a></div></div>' +
-        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/n-mask-packs.jpg" alt="그리드 마스크팩" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">이미 케어클을 쓰고 계신다면</p><p class="rx-coupon__t">소모품을 더 알뜰하게</p>' +
+        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/rx-mask-set.jpg" alt="그리드 마스크 TECH FIT 패키지와 낱장 마스크" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">이미 케어클을 쓰고 계신다면</p><p class="rx-coupon__t">소모품을 더 알뜰하게</p>' +
           '<p class="rx-coupon__price"><b>20% 할인</b><span>그리드 마스크팩 · 콜라겐 젤 등 소모품 재구매 쿠폰</span></p>' +
           '<a class="cku-btn cku-btn-primary" href="cosmetics.html">소모품 쿠폰 받기</a></div></div>' +
       '</div></section>' +
@@ -413,11 +414,11 @@
       '<section class="cku-card">' + title('review', '비슷한 고민을 가진 고객의 실제 후기') + '<div class="cku-reviews">' +
         '<p class="cku-reviews-lead">케어클을 쓰신 분들이 남긴 실제 구매 후기 중에서, 고객님 결과와 맞닿은 이야기를 담은 글을 골랐습니다.</p><ul class="rx-reviews">' +
         REVIEWS.map(function (r, i) {
-          return '<li class="cku-review rx-review"><figure class="rx-review__img"><img src="assets/img/' + REVIEW_IMG[i % REVIEW_IMG.length] + '" alt="" loading="lazy"></figure><div class="rx-review__txt"><div class="cku-review-head"><span class="cku-review-tagline">' + esc(r.tag) + '</span><span class="cku-review-rating" aria-label="평점 ' + r.rating + '점"><span aria-hidden="true">★</span> ' + r.rating + '</span></div>' +
+          return '<li class="cku-review rx-review"><div class="rx-review__img rx-ph" aria-hidden="true"><span>후기 이미지 자리</span></div><div class="rx-review__txt"><div class="cku-review-head"><span class="cku-review-tagline">' + esc(r.tag) + '</span><span class="cku-review-rating" aria-label="평점 ' + r.rating + '점"><span aria-hidden="true">★</span> ' + r.rating + '</span></div>' +
             '<p class="cku-review-body cku-review-body-clamp">' + esc(r.body) + '</p><button type="button" class="cku-review-more" hidden>더보기</button>' +
             '<p class="cku-review-date">' + esc(r.date) + '</p></div></li>';
         }).join('') +
-        '</ul><p class="cku-reviews-note">쇼핑몰에 등록된 구매 후기를 그대로 옮긴 것이며, 내용을 고치지 않았습니다. 사진은 이해를 돕기 위한 연출 이미지입니다. 후기는 개인의 사용 경험으로 효과를 보장하지 않습니다.</p></div></section>' +
+        '</ul><p class="cku-reviews-note">쇼핑몰에 등록된 구매 후기를 그대로 옮긴 것이며, 내용을 고치지 않았습니다. 후기는 개인의 사용 경험으로 효과를 보장하지 않습니다.</p></div></section>' +
 
       share() + actions(opts)
     );
