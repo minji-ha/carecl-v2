@@ -27,14 +27,14 @@
 .checkup .rx-types__h em{font-style:normal;font-weight:700;color:var(--rx-accent)}
 .checkup .rx-types__list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .checkup .rx-type{position:relative;display:flex;flex-direction:column;align-items:center;padding:14px 6px 12px;border-radius:14px;background:var(--rx-warm);text-align:center;transition:transform .3s}
-.checkup .rx-type figure{margin:0 0 8px;width:64px;height:64px;border-radius:50%;overflow:hidden;background:#fff}
-.checkup .rx-type img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:grayscale(1);opacity:.75}
+.checkup .rx-type figure{margin:0 0 8px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#8E847C}
+.checkup .rx-type figure svg{width:40px;height:40px}
 .checkup .rx-type__no{font:600 10px/1 var(--f-ui,system-ui);letter-spacing:.1em;color:#B4AAA1}
 .checkup .rx-type b{margin-top:4px;font-size:13.5px;font-weight:600;color:var(--rx-ink2)}
 .checkup .rx-type small{margin-top:2px;font-size:11px;color:#A0958C}
 .checkup .rx-type.is-me{background:#fff;box-shadow:inset 0 0 0 1.5px var(--rx-accent),0 14px 30px -18px rgba(224,102,43,.6);transform:translateY(-3px)}
 .checkup .rx-type.is-me figure{box-shadow:0 0 0 3px var(--rx-peach2)}
-.checkup .rx-type.is-me img{filter:none;opacity:1}
+.checkup .rx-type.is-me figure{background:var(--rx-peach);color:var(--rx-accent)}
 .checkup .rx-type.is-me b{color:var(--rx-accent);font-weight:700}
 .checkup .rx-type.is-me .rx-type__no{color:var(--rx-accent)}
 .checkup .rx-type__me{position:absolute;top:-9px;left:50%;translate:-50% 0;white-space:nowrap;padding:3px 9px;border-radius:999px;background:var(--rx-accent);color:#fff;font-style:normal;font-size:10.5px;font-weight:700}
@@ -178,6 +178,7 @@
 @media (max-width:640px){
   .checkup .rx-types__list{gap:8px}
   .checkup .rx-type figure{width:52px;height:52px}
+  .checkup .rx-type figure svg{width:34px;height:34px}
   .checkup .rx-type b{font-size:12.5px}
   .checkup .rx-areas{grid-template-columns:1fr}
   .checkup .rx-area{flex-direction:row;gap:18px;padding:14px 16px;text-align:left}
