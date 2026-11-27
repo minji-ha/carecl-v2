@@ -443,7 +443,8 @@
       '<section class="cku-card">' + title('review', '비슷한 고민을 가진 고객의 실제 후기') + '<div class="cku-reviews">' +
         '<p class="cku-reviews-lead">케어클을 쓰신 분들이 남긴 실제 구매 후기 중에서, 고객님 결과와 맞닿은 이야기를 담은 글을 골랐습니다.</p><ul class="rx-reviews">' +
         REVIEWS.map(function (r, i) {
-          return '<li class="cku-review rx-review"><div class="rx-review__img rx-ph" aria-hidden="true"><span>후기 이미지 자리</span></div><div class="rx-review__txt"><div class="cku-review-head"><span class="cku-review-tagline">' + esc(r.tag) + '</span><span class="cku-review-rating" aria-label="평점 ' + r.rating + '점"><span aria-hidden="true">★</span> ' + r.rating + '</span></div>' +
+          return '<li class="cku-review rx-review"><div class="rx-review__img rx-ph" aria-hidden="true"><span>후기 이미지 자리</span></div><div class="rx-review__txt"><div class="rx-rate" role="img" aria-label="평점 5점 만점에 ' + r.rating + '점"><span class="rx-stars" aria-hidden="true">' + [1, 2, 3, 4, 5].map(function (n) { return '<svg viewBox="0 0 24 24" class="' + (n <= r.rating ? 'is-on' : '') + '"><path d="M12 2.8l2.75 5.6 6.15.9-4.45 4.33 1.05 6.12L12 16.87l-5.5 2.88 1.05-6.12L3.1 9.3l6.15-.9z"/></svg>'; }).join('') + '</span><b class="rx-rate__num">' + r.rating.toFixed(1) + '</b><span class="rx-rate__tag">실구매 후기</span></div>' +
+            '<p class="cku-review-tagline rx-review__tag">' + esc(r.tag) + '</p>' +
             '<p class="cku-review-body cku-review-body-clamp">' + esc(r.body) + '</p><button type="button" class="cku-review-more" hidden>더보기</button>' +
             '<p class="cku-review-date">' + esc(r.date) + '</p></div></li>';
         }).join('') +
