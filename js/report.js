@@ -185,6 +185,9 @@
   function wrap(inner) { return '<div class="checkup" data-rpt><div class="cku-result">' + inner + '</div></div>'; }
 
 
+  /* 리포트 그림은 모두 assets/img/report/ 아래 파일 (tools/build_report_assets.py가 만든다) */
+  var RIMG = 'assets/img/report/';
+
   /* ── 2026-11-27 리포트 개편: 6가지 유형 띠 · 부위 확대 · 기기 움직임 ── */
   var TYPE_STRIP = [['early', '초기노화형', '전구형'], ['tired', '피로형', '너구리형'], ['fine', '잔주름형', '스카프형'],
     ['sag', '변형·처짐형', '아이스크림형'], ['muscle', '근육형', '협곡형'], ['mixed', '혼합형', '지도형']];
@@ -193,7 +196,7 @@
     return '<section class="rx-types" aria-label="careCL 6가지 노화 유형"><p class="rx-types__h"><b>careCL 6 Aging Types</b><span>6가지 노화 유형 가운데 고객님의 유형은 <em>' + esc(REPORT[k].name) + '</em>입니다</span></p><ol class="rx-types__list">' +
       TYPE_STRIP.map(function (t, i) {
         var me = t[0] === k;
-        return '<li class="rx-type' + (me ? ' is-me' : '') + '"' + (me ? ' aria-current="true"' : '') + '><figure aria-hidden="true">' + TYPE_ICONS[i] + '</figure>' +
+        return '<li class="rx-type' + (me ? ' is-me' : '') + '"' + (me ? ' aria-current="true"' : '') + '><figure aria-hidden="true"><img src="' + RIMG + 'types/' + t[0] + (me ? '-on' : '') + '.svg" alt=""></figure>' +
           '<span class="rx-type__no">' + ('0' + (i + 1)) + '</span><b>' + esc(t[1]) + '</b><small>' + esc(t[2]) + '</small>' + (me ? '<em class="rx-type__me">나의 유형</em>' : '') + '</li>';
       }).join('') + '</ol></section>';
   }
@@ -248,11 +251,12 @@
     dot: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.6"/>'
   };
   function orderMedia(t) {
-    var ph = orderImg(t);
-    if (ph && !/기초|토너|에멀|마스크|젤/.test(t)) return '<img src="assets/img/' + ph + '" alt="" loading="lazy">';
+    var mode = /EYE SHOT/.test(t) ? 'eye' : /FACE SHOT/.test(t) ? 'face' : /BODY SHOT/.test(t) ? 'body' : /GLOW/.test(t) ? 'glow' : /EMS/.test(t) ? 'ems' : '';
+    if (mode) return '<img src="' + RIMG + 'steps/' + mode + '.jpg" alt="" loading="lazy">';
     var k = /세안/.test(t) ? 'wash' : /마스크|젤/.test(t) ? 'mask' : /기초|토너|에멀/.test(t) ? 'basic' : 'dot';
-    return '<svg class="rx-order__ico" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ORDER_ICONS[k] + '</svg>';
+    return '<img class="rx-order__ico" src="' + RIMG + 'steps/' + k + '.svg" alt="">';
   }
+
   function orderImg(t) {
     if (/EYE SHOT/.test(t)) return 'm-mode-eye.jpg';
     if (/FACE SHOT/.test(t)) return 'm-mode-face.jpg';
@@ -272,8 +276,9 @@
   };
   function lifeIcon(t) {
     var k = /자외선|햇빛|선크림/.test(t) ? 'sun' : /섭취|물/.test(t) ? 'water' : /보습|수분/.test(t) ? 'drop' : /수면|잠/.test(t) ? 'moon' : 'face';
-    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + LIFE_ICONS[k] + '</svg>';
+    return '<img src="' + RIMG + 'life/' + k + '.svg" alt="" width="20" height="20">';
   }
+
   var REVIEW_IMG = ['t-techfit-use.jpg', 't-model-eye.jpg', 'g-step4.jpg'];
 
   /* 기기 움직임 — 부위마다 자리를 옮겨 가며 한 칸씩 '꾹' 누르고, 누른 자리는 점으로 남긴다 */
@@ -355,7 +360,7 @@
       (areas.length ? '<section class="cku-card" data-sec="area">' + title('area', '집중 케어가 필요한 부위') +
         (D.areaIntro ? '<p class="rx-lead">' + esc(D.areaIntro) + '</p>' : '') +
         '<div class="rx-areas" style="--n:' + areas.length + '">' + areas.map(function (a) {
-          return '<article class="rx-area"><div class="rx-area__zoom" style="' + zoomStyle(a.code) + '" role="img" aria-label="' + esc(a.name) + ' 위치"><i class="rx-area__dot" aria-hidden="true"></i></div>' +
+          return '<article class="rx-area"><div class="rx-area__zoom"><img src="' + RIMG + 'area/' + esc(a.code) + '.jpg" alt="' + esc(a.name) + ' 위치" loading="lazy"><i class="rx-area__dot" aria-hidden="true"></i></div>' +
             '<div class="rx-area__txt"><code class="rx-code">' + esc(a.code) + '</code><h4 class="rx-area__name">' + esc(a.name) + '</h4>' +
             (a.pattern ? '<span class="rx-area__pat">' + esc(a.pattern) + '</span>' : '') + '</div></article>';
         }).join('') + '</div>' +
@@ -366,7 +371,7 @@
       /* 홈케어 루틴 + 추천 성분 + 생활습관 */
       '<section class="cku-card" data-sec="care">' + title('homecare', '홈케어 루틴 · 추천 성분 · 생활습관') +
         '<div class="rx-care">' +
-          '<figure class="rx-care__img"><img src="assets/img/rx-mirror.jpg" alt="거울 앞에서 피부를 살피는 여성" loading="lazy"></figure>' +
+          '<figure class="rx-care__img"><img src="' + RIMG + 'common/care.jpg" alt="거울 앞에서 피부를 살피는 여성" loading="lazy"></figure>' +
           (D.homecare && D.homecare.length ? '<ol class="rx-num">' + D.homecare.map(function (t, i) {
             return '<li><span class="rx-num__no">' + (i + 1) + '</span><p>' + esc(t) + '</p></li>'; }).join('') + '</ol>' : '') +
         '</div>' +
@@ -384,10 +389,10 @@
 
       /* 고주파 기술 + 맞춤 사용법 + SHOT 모드 — 기기 움직임 애니메이션 */
       '<section class="cku-card" data-sec="tech">' + title('shot', '케어클 TECH FIT 맞춤 사용법') +
-        (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="assets/img/g-why-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
+        (D.rf && D.rf.length ? '<div class="rx-rf"><figure class="rx-rf__img"><img src="' + RIMG + 'common/rf-stamp.jpg" alt="그리드 마스크 위 한 칸에 TECH FIT을 대고 있는 모습" loading="lazy"><figcaption><b>5 sec</b>Stamping Shot</figcaption></figure>' +
           '<div class="rx-rf__txt"><p class="rx-kicker">고주파(RF) 기술과 케어클</p>' + paras(D.rf) + '</div></div>' : '') +
         (shots.length ? '<div class="rx-guide" data-guide>' +
-          '<figure class="rx-guide__fig"><img data-guide-img src="assets/img/rx-guide-' + modeKey(shots[0].mode) + '.jpg" alt="' + esc(shots[0].mode) + ' 사용 방법 그림" loading="lazy">' +
+          '<figure class="rx-guide__fig"><img data-guide-img src="' + RIMG + 'guide/' + modeKey(shots[0].mode) + '.jpg" alt="' + esc(shots[0].mode) + ' 사용 방법 그림" loading="lazy">' +
             '<figcaption data-guide-cap><i class="rx-led rx-led--' + modeKey(shots[0].mode) + '"></i>' + esc(shots[0].mode) + ' 사용 방법</figcaption></figure>' +
           '<div class="rx-guide__body">' +
             (D.usage && D.usage.length ? '<div class="rx-demo__usage">' + paras(D.usage) + '</div>' : '') +
@@ -409,7 +414,7 @@
         D.modes.map(function (m) {
           var badge = m.required === true ? '필수' : m.required === false ? '선택' : '';
           var mk = /EMS/.test(m.name) ? 'ems' : 'glow';
-          return '<div class="rx-mode"><figure class="rx-mode__img' + (mk === 'ems' ? ' is-ill' : '') + '"><img src="assets/img/' + (mk === 'ems' ? 'rx-ill-ems.png' : 'rx-guide-glow.jpg') + '" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
+          return '<div class="rx-mode"><figure class="rx-mode__img is-ill"><img src="' + RIMG + 'guide/' + (mk === 'ems' ? 'ems-side.png' : 'glow.jpg') + '" alt="" loading="lazy"></figure><div class="rx-mode__txt"><p class="rx-mode__head"><i class="rx-led rx-led--' + mk + '"></i>' + esc(m.name) +
             (badge ? '<span class="rx-badge">' + badge + '</span>' : '') + (m.duration ? '<span class="rx-mode__dur">권장 ' + esc(m.duration) + '</span>' : '') + '</p>' +
             (m.desc ? '<p class="rx-mode__desc">' + esc(m.desc) + '</p>' : '') + '</div></div>';
         }).join('') + '</div></section>' : '') +
@@ -424,10 +429,10 @@
 
       /* 혜택 */
       '<section class="cku-card">' + title('coupon', 'AI 분석 결과 고객 전용 혜택') + '<div class="rx-coupons">' +
-        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/c-techfit-case.jpg" alt="케이스에 담긴 TECH FIT" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">아직 케어클이 없으시다면</p><p class="rx-coupon__t">지금 TECH FIT을 시작하기 좋은 때</p>' +
+        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="' + RIMG + 'common/coupon-techfit.jpg" alt="케이스에 담긴 TECH FIT" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">아직 케어클이 없으시다면</p><p class="rx-coupon__t">지금 TECH FIT을 시작하기 좋은 때</p>' +
           '<p class="rx-coupon__price"><s>820,000원</s><b>518,000원</b><span>30% 할인 568,000원 + 첫 구매 쿠폰 5만원</span></p>' +
           '<a class="cku-btn cku-btn-primary" href="products.html">쿠폰 받고 TECH FIT 시작하기</a></div></div>' +
-        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="assets/img/rx-mask-set.jpg" alt="그리드 마스크 TECH FIT 패키지와 낱장 마스크" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">이미 케어클을 쓰고 계신다면</p><p class="rx-coupon__t">소모품을 더 알뜰하게</p>' +
+        '<div class="rx-coupon"><figure class="rx-coupon__img"><img src="' + RIMG + 'common/coupon-consumables.jpg" alt="그리드 마스크 TECH FIT 패키지와 낱장 마스크" loading="lazy"></figure><div class="rx-coupon__txt"><p class="rx-coupon__k">이미 케어클을 쓰고 계신다면</p><p class="rx-coupon__t">소모품을 더 알뜰하게</p>' +
           '<p class="rx-coupon__price"><b>20% 할인</b><span>그리드 마스크팩 · 콜라겐 젤 등 소모품 재구매 쿠폰</span></p>' +
           '<a class="cku-btn cku-btn-primary" href="cosmetics.html">소모품 쿠폰 받기</a></div></div>' +
       '</div></section>' +
@@ -501,7 +506,7 @@
     if (gs) {
       var g = gs.closest('[data-guide]'), mk = gs.dataset.mode, nm = gs.dataset.modeName;
       Array.prototype.forEach.call(g.querySelectorAll('[data-shot]'), function (x) { x.classList.toggle('is-on', x === gs); });
-      var img = g.querySelector('[data-guide-img]'); img.src = 'assets/img/rx-guide-' + mk + '.jpg'; img.alt = nm + ' 사용 방법 그림';
+      var img = g.querySelector('[data-guide-img]'); img.src = RIMG + 'guide/' + mk + '.jpg'; img.alt = nm + ' 사용 방법 그림';
       g.querySelector('[data-guide-cap]').innerHTML = '<i class="rx-led rx-led--' + mk + '"></i>' + esc(nm) + ' 사용 방법';
       return;
     }
